@@ -1,0 +1,355 @@
+/**
+ * Admin Settings Page
+ * Manage site configuration
+ */
+
+import { useState, useEffect } from 'react';
+import AdminLayout from '../components/AdminLayout';
+import FileUpload from '../components/FileUpload';
+import { settingsService } from '../../services';
+import { toast } from 'react-toastify';
+
+const AdminSettings = () => {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    site_title: '',
+    site_tagline: '',
+    logo_url: '',
+    favicon_url: '',
+    contact_email: '',
+    contact_phone: '',
+    contact_address: '',
+    facebook_url: '',
+    twitter_url: '',
+    instagram_url: '',
+    linkedin_url: '',
+    youtube_url: '',
+    map_embed_url: '',
+    footer_text: '',
+    about_text: '',
+    about_image: '',
+    mission: '',
+    mission_image: '',
+    vision: '',
+    vision_image: '',
+    values: '',
+    values_image: '',
+  });
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      setLoading(true);
+      const response = await settingsService.get();
+      setFormData(response.data);
+    } catch (error) {
+      toast.error('Failed to fetch settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+
+    try {
+      await settingsService.update(formData);
+      toast.success('Settings updated successfully');
+    } catch (error) {
+      toast.error(error.message || 'Failed to update settings');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="text-center py-12">Loading...</div>
+      </AdminLayout>
+    );
+  }
+
+  return (
+    <AdminLayout>
+      <div>
+        <h1 className="text-3xl font-bold mb-6">Site Settings</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Basic Information */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="label">Site Title</label>
+                <input
+                  type="text"
+                  name="site_title"
+                  value={formData.site_title}
+                  onChange={handleChange}
+                  className="input"
+                />
+              </div>
+              <div>
+                <label className="label">Site Tagline</label>
+                <input
+                  type="text"
+                  name="site_tagline"
+                  value={formData.site_tagline || ''}
+                  onChange={handleChange}
+                  className="input"
+                />
+              </div>
+              <div>
+                <label className="label">Upload Logo</label>
+                <FileUpload
+                  onUploadComplete={(url) => setFormData({ ...formData, logo_url: url })}
+                  accept="image/*"
+                  label="Upload Logo"
+                />
+                {formData.logo_url && (
+                  <p className="text-sm text-green-600 mt-2">✓ Logo uploaded</p>
+                )}
+              </div>
+              <div>
+                <label className="label">Upload Favicon</label>
+                <FileUpload
+                  onUploadComplete={(url) => setFormData({ ...formData, favicon_url: url })}
+                  accept="image/*,.ico"
+                  label="Upload Favicon"
+                />
+                {formData.favicon_url && (
+                  <p className="text-sm text-green-600 mt-2">✓ Favicon uploaded</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Information */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="label">Contact Email</label>
+                <input
+                  type="email"
+                  name="contact_email"
+                  value={formData.contact_email || ''}
+                  onChange={handleChange}
+                  className="input"
+                />
+              </div>
+              <div>
+                <label className="label">Contact Phone</label>
+                <input
+                  type="tel"
+                  name="contact_phone"
+                  value={formData.contact_phone || ''}
+                  onChange={handleChange}
+                  className="input"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="label">Contact Address</label>
+                <textarea
+                  name="contact_address"
+                  value={formData.contact_address || ''}
+                  onChange={handleChange}
+                  rows="2"
+                  className="input"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Social Media */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Social Media Links</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="label">Facebook URL</label>
+                <input
+                  type="url"
+                  name="facebook_url"
+                  value={formData.facebook_url || ''}
+                  onChange={handleChange}
+                  className="input"
+                />
+              </div>
+              <div>
+                <label className="label">Twitter URL</label>
+                <input
+                  type="url"
+                  name="twitter_url"
+                  value={formData.twitter_url || ''}
+                  onChange={handleChange}
+                  className="input"
+                />
+              </div>
+              <div>
+                <label className="label">Instagram URL</label>
+                <input
+                  type="url"
+                  name="instagram_url"
+                  value={formData.instagram_url || ''}
+                  onChange={handleChange}
+                  className="input"
+                />
+              </div>
+              <div>
+                <label className="label">LinkedIn URL</label>
+                <input
+                  type="url"
+                  name="linkedin_url"
+                  value={formData.linkedin_url || ''}
+                  onChange={handleChange}
+                  className="input"
+                />
+              </div>
+              <div>
+                <label className="label">YouTube URL</label>
+                <input
+                  type="url"
+                  name="youtube_url"
+                  value={formData.youtube_url || ''}
+                  onChange={handleChange}
+                  className="input"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* About Information */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">About Information</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="label">About Text</label>
+                <textarea
+                  name="about_text"
+                  value={formData.about_text || ''}
+                  onChange={handleChange}
+                  rows="3"
+                  className="input"
+                />
+              </div>
+              <div>
+                <label className="label">About Section Image</label>
+                <FileUpload
+                  onUploadComplete={(url) => setFormData({ ...formData, about_image: url })}
+                  accept="image/*"
+                  label="Upload About Image"
+                />
+                {formData.about_image && (
+                  <p className="text-sm text-green-600 mt-2">✓ Image uploaded</p>
+                )}
+              </div>
+              <div>
+                <label className="label">Mission Statement</label>
+                <textarea
+                  name="mission"
+                  value={formData.mission || ''}
+                  onChange={handleChange}
+                  rows="3"
+                  className="input"
+                />
+              </div>
+              <div>
+                <label className="label">Mission Image</label>
+                <FileUpload
+                  onUploadComplete={(url) => setFormData({ ...formData, mission_image: url })}
+                  accept="image/*"
+                  label="Upload Mission Image"
+                />
+                {formData.mission_image && (
+                  <p className="text-sm text-green-600 mt-2">✓ Image uploaded</p>
+                )}
+              </div>
+              <div>
+                <label className="label">Vision Statement</label>
+                <textarea
+                  name="vision"
+                  value={formData.vision || ''}
+                  onChange={handleChange}
+                  rows="3"
+                  className="input"
+                />
+              </div>
+              <div>
+                <label className="label">Vision Image</label>
+                <FileUpload
+                  onUploadComplete={(url) => setFormData({ ...formData, vision_image: url })}
+                  accept="image/*"
+                  label="Upload Vision Image"
+                />
+                {formData.vision_image && (
+                  <p className="text-sm text-green-600 mt-2">✓ Image uploaded</p>
+                )}
+              </div>
+              <div>
+                <label className="label">Values</label>
+                <textarea
+                  name="values"
+                  value={formData.values || ''}
+                  onChange={handleChange}
+                  rows="4"
+                  className="input"
+                  placeholder="List your organizational values"
+                />
+              </div>
+              <div>
+                <label className="label">Values Image</label>
+                <FileUpload
+                  onUploadComplete={(url) => setFormData({ ...formData, values_image: url })}
+                  accept="image/*"
+                  label="Upload Values Image"
+                />
+                {formData.values_image && (
+                  <p className="text-sm text-green-600 mt-2">✓ Image uploaded</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Footer</h2>
+            <div>
+              <label className="label">Footer Text</label>
+              <textarea
+                name="footer_text"
+                value={formData.footer_text || ''}
+                onChange={handleChange}
+                rows="2"
+                className="input"
+                placeholder="© 2024 National Migrant Network. All rights reserved."
+              />
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={saving}
+              className="btn btn-primary px-8"
+            >
+              {saving ? 'Saving...' : 'Save Settings'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export default AdminSettings;
