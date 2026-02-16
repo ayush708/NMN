@@ -20,9 +20,8 @@ const AdminResources = () => {
     description: '',
     file_url: '',
     file_type: 'pdf',
-    file_size: '',
-    category: 'reports',
-    is_featured: false,
+    file_size: null,
+    category: 'report',
     is_published: true,
   });
 
@@ -72,9 +71,8 @@ const AdminResources = () => {
       description: resource.description || '',
       file_url: resource.file_url,
       file_type: resource.file_type,
-      file_size: resource.file_size || '',
+      file_size: resource.file_size || null,
       category: resource.category,
-      is_featured: resource.is_featured,
       is_published: resource.is_published,
     });
     setShowModal(true);
@@ -99,9 +97,8 @@ const AdminResources = () => {
       description: '',
       file_url: '',
       file_type: 'pdf',
-      file_size: '',
-      category: 'reports',
-      is_featured: false,
+      file_size: null,
+      category: 'report',
       is_published: true,
     });
   };
@@ -180,7 +177,7 @@ const AdminResources = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {resource.file_size || 'N/A'}
+                        {resource.file_size ? `${(resource.file_size / 1024 / 1024).toFixed(2)} MB` : 'N/A'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <div className="flex items-center gap-1">
@@ -286,15 +283,16 @@ const AdminResources = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">File Size</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">File Size (bytes)</label>
                       <input
-                        type="text"
+                        type="number"
                         name="file_size"
-                        value={formData.file_size}
+                        value={formData.file_size || ''}
                         onChange={handleChange}
-                        placeholder="e.g., 2.5 MB"
+                        placeholder="e.g., 2500000 for 2.5MB"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md"
                       />
+                      <p className="text-xs text-gray-500 mt-1">Optional: Leave blank or enter size in bytes</p>
                     </div>
                   </div>
 
@@ -307,28 +305,15 @@ const AdminResources = () => {
                       required
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     >
-                      <option value="reports">Reports</option>
-                      <option value="guidelines">Guidelines</option>
-                      <option value="policies">Policies</option>
-                      <option value="forms">Forms</option>
-                      <option value="brochures">Brochures</option>
-                      <option value="research">Research</option>
+                      <option value="report">Reports</option>
+                      <option value="publication">Publications</option>
+                      <option value="policy">Policy Documents</option>
+                      <option value="guide">Guides & Toolkits</option>
                       <option value="other">Other</option>
                     </select>
                   </div>
 
-                  <div className="flex gap-4">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        name="is_featured"
-                        checked={formData.is_featured}
-                        onChange={handleChange}
-                        className="mr-2"
-                      />
-                      <span className="text-sm text-gray-700">Featured</span>
-                    </label>
-
+                  <div>
                     <label className="flex items-center">
                       <input
                         type="checkbox"

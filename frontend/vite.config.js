@@ -13,11 +13,6 @@ export default defineConfig({
   server: {
     port: 5173,
     host: '0.0.0.0', // Allow access from network (mobile devices)
-    proxy: {
-      '/api': {
-        target: 'http://192.168.1.70:5000',
-        changeOrigin: true,
-      },
-    },
+    // No proxy needed - using direct API URLs from .env
   },
 })

@@ -24,7 +24,23 @@ const submitContact = async (req, res) => {
 
   } catch (error) {
     console.error('Submit contact error:', error);
-    return errorResponse(res, 'Failed to send message', 500);
+
+    // Provide specific error messages for better UX
+    let errorMessage = 'Failed to send message';
+
+    if (error.code === '23505') {
+      // Duplicate key violation (unlikely but possible)
+      errorMessage = 'This message has already been submitted.';
+    } else if (error.code === '23502') {
+      // Not null violation
+      const field = error.column || 'field';
+      errorMessage = `${field} is required. Please fill in all required fields.`;
+    } else if (error.message) {
+      // Show database error if available
+      errorMessage = `Error: ${error.message}`;
+    }
+
+    return errorResponse(res, errorMessage, 400);
   }
 };
 

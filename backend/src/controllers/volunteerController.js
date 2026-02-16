@@ -5,6 +5,7 @@
 
 const { query } = require('../config/database');
 const { successResponse, errorResponse, paginatedResponse } = require('../utils/response');
+const { sendVolunteerApprovalEmail } = require('../services/emailService');
 
 // Submit volunteer application (Public)
 const submitVolunteer = async (req, res) => {
@@ -27,7 +28,26 @@ const submitVolunteer = async (req, res) => {
 
   } catch (error) {
     console.error('Submit volunteer error:', error);
-    return errorResponse(res, 'Failed to submit application', 500);
+
+    // Provide specific error messages for better UX
+    let errorMessage = 'Failed to submit application';
+
+    if (error.code === '23505') {
+      // Duplicate key violation
+      errorMessage = 'This email is already registered. Please use a different email.';
+    } else if (error.code === '22007') {
+      // Invalid date format
+      errorMessage = 'Invalid date format. Please check the date of birth field.';
+    } else if (error.code === '23502') {
+      // Not null violation
+      const field = error.column || 'field';
+      errorMessage = `${field} is required. Please fill in all required fields.`;
+    } else if (error.message) {
+      // Show database error if available
+      errorMessage = `Error: ${error.message}`;
+    }
+
+    return errorResponse(res, errorMessage, 400);
   }
 };
 
@@ -101,7 +121,27 @@ const approveVolunteer = async (req, res) => {
       return errorResponse(res, 'Volunteer not found', 404);
     }
 
-    return successResponse(res, result.rows[0], 'Volunteer approved successfully');
+    const volunteer = result.rows[0];
+
+    // Try to send approval email (non-blocking, optional)
+    try {
+      const emailResult = await sendVolunteerApprovalEmail({
+        name: volunteer.name,
+        email: volunteer.email
+      });
+
+      // Log email status
+      if (emailResult.success) {
+        console.log(`✅ Approval email sent to ${volunteer.email}`);
+      } else {
+        console.log(`⚠️  Volunteer approved but email failed: ${emailResult.message || emailResult.error}`);
+      }
+    } catch (emailError) {
+      // Email failed but don't break the approval
+      console.error('⚠️  Email service error (approval still succeeded):', emailError.message);
+    }
+
+    return successResponse(res, volunteer, 'Volunteer approved successfully');
 
   } catch (error) {
     console.error('Approve volunteer error:', error);

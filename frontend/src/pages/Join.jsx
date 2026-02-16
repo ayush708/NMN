@@ -27,13 +27,50 @@ const Join = () => {
     how_heard: '',
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error for this field when user starts typing
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: '' });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone is required';
+    }
+
+    if (!formData.date_of_birth.trim()) {
+      newErrors.date_of_birth = 'Date of birth is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate form before submission
+    if (!validateForm()) {
+      toast.error('Please fill in all required fields correctly');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -56,8 +93,10 @@ const Join = () => {
         motivation: '',
         how_heard: '',
       });
+      setErrors({});
     } catch (error) {
-      toast.error(error.message || 'Failed to submit application');
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to submit application. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -69,7 +108,7 @@ const Join = () => {
       <section className="bg-primary-600 text-white py-16">
         <div className="container-custom">
           <h1 className="text-4xl font-bold">Join Us as a Volunteer</h1>
-          <p className="text-xl mt-2">Make a difference in migrant workers' lives</p>
+          <p className="text-xl mt-2">Make a difference in migrant workers&apos; lives</p>
         </div>
       </section>
 
@@ -92,8 +131,9 @@ const Join = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="input"
+                      className={`input ${errors.name ? 'border-red-500 focus:border-red-500' : ''}`}
                     />
+                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                   </div>
                   <div>
                     <label className="label">Email *</label>
@@ -103,8 +143,9 @@ const Join = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="input"
+                      className={`input ${errors.email ? 'border-red-500 focus:border-red-500' : ''}`}
                     />
+                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                   </div>
                   <div>
                     <label className="label">Phone *</label>
@@ -114,18 +155,21 @@ const Join = () => {
                       value={formData.phone}
                       onChange={handleChange}
                       required
-                      className="input"
+                      className={`input ${errors.phone ? 'border-red-500 focus:border-red-500' : ''}`}
                     />
+                    {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
                   </div>
                   <div>
-                    <label className="label">Date of Birth</label>
+                    <label className="label">Date of Birth *</label>
                     <input
                       type="date"
                       name="date_of_birth"
                       value={formData.date_of_birth}
                       onChange={handleChange}
-                      className="input"
+                      required
+                      className={`input ${errors.date_of_birth ? 'border-red-500 focus:border-red-500' : ''}`}
                     />
+                    {errors.date_of_birth && <p className="text-red-500 text-sm mt-1">{errors.date_of_birth}</p>}
                   </div>
                 </div>
               </div>
@@ -285,9 +329,9 @@ const Join = () => {
           <div className="mt-8 bg-blue-50 p-6 rounded-lg">
             <h3 className="font-semibold mb-2">What happens after you apply?</h3>
             <ul className="list-disc list-inside space-y-1 text-gray-700">
-              <li>We'll review your application within 2-3 business days</li>
+              <li>We&apos;ll review your application within 2-3 business days</li>
               <li>Our team will contact you via email or phone</li>
-              <li>You'll be invited for an orientation session</li>
+              <li>You&apos;ll be invited for an orientation session</li>
               <li>Start making a difference in the community!</li>
             </ul>
           </div>

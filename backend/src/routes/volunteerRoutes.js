@@ -22,7 +22,8 @@ const {
 const volunteerValidation = [
   body('name').notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Valid email is required'),
-  body('phone').notEmpty().withMessage('Phone is required')
+  body('phone').notEmpty().withMessage('Phone is required'),
+  body('date_of_birth').notEmpty().withMessage('Date of birth is required').isDate().withMessage('Valid date is required')
 ];
 
 // Public routes (with rate limiting to prevent spam)

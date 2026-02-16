@@ -46,9 +46,24 @@ app.use(helmet({
   xssFilter: true
 }));
 
-// CORS configuration
+// CORS configuration - Allow both localhost and network IP
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://192.168.1.70:5173',
+  process.env.CLIENT_URL
+].filter(Boolean);
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200
 };

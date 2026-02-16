@@ -39,12 +39,15 @@ Thumbs.db
 # Uploads (contains user uploaded files)
 backend/uploads/
 
-# Database
-*.sql
+# Database backups
 *.sqlite
 *.db
+# Exclude database dumps but keep schema/migrations
+**/backup.sql
+**/dump.sql
 
 # Misc
 .cache/
 .temp/
 tmp/
+tmpclaude-*

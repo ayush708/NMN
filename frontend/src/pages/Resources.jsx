@@ -109,6 +109,14 @@ const Resources = () => {
             >
               Guides
             </button>
+            <button
+              onClick={() => setFilter('other')}
+              className={`px-4 py-2 rounded-lg ${
+                filter === 'other' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Other
+            </button>
           </div>
         </div>
       </div>

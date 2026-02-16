@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 const AdminSettings = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [statistics, setStatistics] = useState([]);
   const [formData, setFormData] = useState({
     site_title: '',
     site_tagline: '',
@@ -39,6 +40,7 @@ const AdminSettings = () => {
 
   useEffect(() => {
     fetchSettings();
+    fetchStatistics();
   }, []);
 
   const fetchSettings = async () => {
@@ -53,8 +55,23 @@ const AdminSettings = () => {
     }
   };
 
+  const fetchStatistics = async () => {
+    try {
+      const response = await settingsService.getStatistics();
+      setStatistics(response.data);
+    } catch (error) {
+      toast.error('Failed to fetch statistics');
+    }
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleStatisticChange = (id, field, value) => {
+    setStatistics(statistics.map(stat =>
+      stat.id === id ? { ...stat, [field]: value } : stat
+    ));
   };
 
   const handleSubmit = async (e) => {
@@ -62,7 +79,19 @@ const AdminSettings = () => {
     setSaving(true);
 
     try {
+      // Save general settings
       await settingsService.update(formData);
+
+      // Save all statistics
+      await Promise.all(
+        statistics.map(stat =>
+          settingsService.updateStatistic(stat.id, {
+            metric_value: parseInt(stat.metric_value),
+            metric_label: stat.metric_label
+          })
+        )
+      );
+
       toast.success('Settings updated successfully');
     } catch (error) {
       toast.error(error.message || 'Failed to update settings');
@@ -333,6 +362,40 @@ const AdminSettings = () => {
                 className="input"
                 placeholder="© 2024 National Migrant Network. All rights reserved."
               />
+            </div>
+          </div>
+
+          {/* Statistics Section */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Statistics (Homepage)</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              These numbers appear on the homepage. Update them to reflect your organization's actual statistics.
+            </p>
+            <div className="space-y-4">
+              {statistics.map((stat) => (
+                <div key={stat.id} className="border rounded-lg p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="label text-sm">Label</label>
+                      <input
+                        type="text"
+                        value={stat.metric_label || ''}
+                        onChange={(e) => handleStatisticChange(stat.id, 'metric_label', e.target.value)}
+                        className="input"
+                      />
+                    </div>
+                    <div>
+                      <label className="label text-sm">Value</label>
+                      <input
+                        type="number"
+                        value={stat.metric_value || 0}
+                        onChange={(e) => handleStatisticChange(stat.id, 'metric_value', e.target.value)}
+                        className="input"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

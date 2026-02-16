@@ -106,14 +106,13 @@ const updateSettings = async (req, res) => {
 const updateStatistic = async (req, res) => {
   try {
     const { id } = req.params;
-    const { metric_name, metric_value, metric_label, display_order, is_active } = req.body;
+    const { metric_value, metric_label } = req.body;
 
     const result = await query(
       `UPDATE statistics
-       SET metric_name = $1, metric_value = $2, metric_label = $3,
-           display_order = $4, is_active = $5
-       WHERE id = $6 RETURNING *`,
-      [metric_name, metric_value, metric_label, display_order, is_active, id]
+       SET metric_value = $1, metric_label = $2
+       WHERE id = $3 RETURNING *`,
+      [metric_value, metric_label, id]
     );
 
     if (result.rows.length === 0) {

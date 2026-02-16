@@ -18,6 +18,7 @@ const Contact = () => {
   });
   const [loading, setLoading] = useState(false);
   const [settings, setSettings] = useState(null);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     fetchSettings();
@@ -34,18 +35,52 @@ const Contact = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error for this field when user starts typing
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: '' });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate form before submission
+    if (!validateForm()) {
+      toast.error('Please fill in all required fields correctly');
+      return;
+    }
+
     setLoading(true);
 
     try {
       await contactService.submit(formData);
-      toast.success('Message sent successfully!');
+      toast.success('Message sent successfully! We will get back to you soon.');
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+      setErrors({});
     } catch (error) {
-      toast.error(error.message || 'Failed to send message');
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to send message. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -77,8 +112,9 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="input"
+                    className={`input ${errors.name ? 'border-red-500 focus:border-red-500' : ''}`}
                   />
+                  {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                 </div>
 
                 <div>
@@ -89,12 +125,13 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="input"
+                    className={`input ${errors.email ? 'border-red-500 focus:border-red-500' : ''}`}
                   />
+                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                 </div>
 
                 <div>
-                  <label className="label">Phone</label>
+                  <label className="label">Phone (Optional)</label>
                   <input
                     type="tel"
                     name="phone"
@@ -105,7 +142,7 @@ const Contact = () => {
                 </div>
 
                 <div>
-                  <label className="label">Subject</label>
+                  <label className="label">Subject (Optional)</label>
                   <input
                     type="text"
                     name="subject"
@@ -123,8 +160,9 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     rows="5"
-                    className="input"
+                    className={`input ${errors.message ? 'border-red-500 focus:border-red-500' : ''}`}
                   ></textarea>
+                  {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
                 </div>
 
                 <button type="submit" disabled={loading} className="btn btn-primary w-full">

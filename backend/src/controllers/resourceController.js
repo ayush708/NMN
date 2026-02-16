@@ -69,8 +69,11 @@ const getResourceById = async (req, res) => {
 const createResource = async (req, res) => {
   try {
     const {
-      title, description, file_url, file_name, file_type, file_size, category, is_published
+      title, description, file_url, file_type, file_size, category, is_published
     } = req.body;
+
+    // Extract file name from URL if not provided
+    const file_name = file_url ? file_url.split('/').pop() : null;
 
     const result = await query(
       `INSERT INTO resources (title, description, file_url, file_name, file_type, file_size, category, is_published, uploaded_by)
@@ -91,8 +94,11 @@ const updateResource = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      title, description, file_url, file_name, file_type, file_size, category, is_published
+      title, description, file_url, file_type, file_size, category, is_published
     } = req.body;
+
+    // Extract file name from URL if not provided
+    const file_name = file_url ? file_url.split('/').pop() : null;
 
     const result = await query(
       `UPDATE resources

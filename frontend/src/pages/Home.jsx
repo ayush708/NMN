@@ -15,7 +15,6 @@ const Home = () => {
   const [statistics, setStatistics] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [news, setNews] = useState([]);
-  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ const Home = () => {
 
   const fetchHomeData = async () => {
     try {
-      const [bannersRes, statsRes, programsRes, newsRes, eventsRes] = await Promise.all([
+      const [bannersRes, statsRes, programsRes, newsRes] = await Promise.all([
         settingsService.getBanners(),
         settingsService.getStatistics(),
         programService.getAll({ featured: true, limit: 3 }),
@@ -36,7 +35,6 @@ const Home = () => {
       setStatistics(statsRes.data);
       setPrograms(programsRes.data);
       setNews(newsRes.data);
-      setEvents(eventsRes.data);
     } catch (error) {
       console.error('Error fetching home data:', error);
     } finally {
@@ -60,7 +58,7 @@ const Home = () => {
       <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-20">
         <div className="container-custom">
           {banners.length > 0 ? (
-            <div className="max-w-3xl">
+            <div className="max-w-3xl fade-in-up">
               <h1 className="text-5xl font-bold mb-4">{banners[0].title}</h1>
               <p className="text-xl mb-6">{banners[0].subtitle}</p>
               <p className="text-lg mb-8">{banners[0].description}</p>
@@ -71,7 +69,7 @@ const Home = () => {
               )}
             </div>
           ) : (
-            <div className="max-w-3xl">
+            <div className="max-w-3xl fade-in-up">
               <h1 className="text-5xl font-bold mb-4">Empowering Migrant Workers</h1>
               <p className="text-xl mb-6">For Human Rights and Social Justice</p>
               <p className="text-lg mb-8">
@@ -90,8 +88,12 @@ const Home = () => {
         <section className="py-16 bg-gray-50">
           <div className="container-custom">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {statistics.map((stat) => (
-                <div key={stat.id} className="text-center">
+              {statistics.map((stat, index) => (
+                <div
+                  key={stat.id}
+                  className="text-center scale-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
                   <div className="text-4xl font-bold text-primary-600 mb-2">
                     {stat.metric_value.toLocaleString()}+
                   </div>
@@ -107,10 +109,15 @@ const Home = () => {
       {programs.length > 0 && (
         <section className="py-16">
           <div className="container-custom">
-            <h2 className="text-3xl font-bold mb-8 text-center">Our Programs</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center fade-in-up">Our Programs</h2>
             <div className="grid md:grid-cols-3 gap-8">
-              {programs.map((program) => (
-                <Link key={program.id} to={`/programs/${program.slug}`} className="card p-6 hover:scale-105 transition">
+              {programs.map((program, index) => (
+                <Link
+                  key={program.id}
+                  to={`/programs/${program.slug}`}
+                  className="card p-6 fade-in-up"
+                  style={{ animationDelay: `${index * 0.2}s` }}
+                >
                   {program.image_url && (
                     <img src={getImageUrl(program.image_url)} alt={program.title} className="w-full h-48 object-cover rounded-lg mb-4" />
                   )}
@@ -120,7 +127,7 @@ const Home = () => {
                 </Link>
               ))}
             </div>
-            <div className="text-center mt-8">
+            <div className="text-center mt-8 fade-in">
               <Link to="/programs" className="btn btn-outline">View All Programs</Link>
             </div>
           </div>
@@ -131,10 +138,15 @@ const Home = () => {
       {news.length > 0 && (
         <section className="py-16 bg-gray-50">
           <div className="container-custom">
-            <h2 className="text-3xl font-bold mb-8 text-center">Latest News</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center fade-in-up">Latest News</h2>
             <div className="grid md:grid-cols-3 gap-8">
-              {news.map((item) => (
-                <Link key={item.id} to={`/news/${item.slug}`} className="card overflow-hidden hover:scale-105 transition">
+              {news.map((item, index) => (
+                <Link
+                  key={item.id}
+                  to={`/news/${item.slug}`}
+                  className="card overflow-hidden fade-in-up"
+                  style={{ animationDelay: `${index * 0.2}s` }}
+                >
                   {item.image_url && (
                     <img src={getImageUrl(item.image_url)} alt={item.title} className="w-full h-48 object-cover" />
                   )}
@@ -146,7 +158,7 @@ const Home = () => {
                 </Link>
               ))}
             </div>
-            <div className="text-center mt-8">
+            <div className="text-center mt-8 fade-in">
               <Link to="/news" className="btn btn-outline">View All News</Link>
             </div>
           </div>
@@ -155,7 +167,7 @@ const Home = () => {
 
       {/* CTA Section */}
       <section className="py-16 bg-primary-600 text-white">
-        <div className="container-custom text-center">
+        <div className="container-custom text-center fade-in-up">
           <h2 className="text-3xl font-bold mb-4">Join Our Mission</h2>
           <p className="text-xl mb-8">Be part of the change. Volunteer with us today.</p>
           <Link to="/join" className="btn bg-white text-primary-600 hover:bg-gray-100">
