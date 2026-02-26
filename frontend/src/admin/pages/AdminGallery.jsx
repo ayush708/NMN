@@ -6,13 +6,13 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import FileUpload from '../components/FileUpload';
-import { galleryService } from '../../services';
+import { galleryService, uploadService } from '../../services';
 import { toast } from 'react-toastify';
 import { FaEdit, FaTrash, FaPlus, FaImages, FaImage } from 'react-icons/fa';
+import { getImageUrl } from '../../utils/imageHelper';
 
 const AdminGallery = () => {
   const [albums, setAlbums] = useState([]);
-  const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAlbumModal, setShowAlbumModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -20,7 +20,7 @@ const AdminGallery = () => {
   const [albumFormData, setAlbumFormData] = useState({
     title: '',
     description: '',
-    cover_image: '',
+    cover_image_url: '',
     is_published: true,
   });
   const [imageFormData, setImageFormData] = useState({
@@ -29,6 +29,7 @@ const AdminGallery = () => {
     caption: '',
     display_order: 0,
   });
+  const [uploadedImages, setUploadedImages] = useState([]);
 
   useEffect(() => {
     fetchAlbums();
@@ -49,10 +50,6 @@ const AdminGallery = () => {
   const handleAlbumChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setAlbumFormData({ ...albumFormData, [e.target.name]: value });
-  };
-
-  const handleImageChange = (e) => {
-    setImageFormData({ ...imageFormData, [e.target.name]: e.target.value });
   };
 
   const handleAlbumSubmit = async (e) => {
@@ -76,8 +73,27 @@ const AdminGallery = () => {
   const handleImageSubmit = async (e) => {
     e.preventDefault();
     try {
-      await galleryService.addImage(imageFormData);
-      toast.success('Image added successfully');
+      // If there are multiple uploaded images, save them all
+      if (uploadedImages.length > 0) {
+        await Promise.all(
+          uploadedImages.map((img, index) =>
+            galleryService.addImage({
+              album_id: imageFormData.album_id,
+              image_url: img.url,
+              caption: img.caption || '',
+              display_order: index,
+            })
+          )
+        );
+        toast.success(`${uploadedImages.length} image(s) added successfully`);
+      } else if (imageFormData.image_url) {
+        // Single image upload
+        await galleryService.addImage(imageFormData);
+        toast.success('Image added successfully');
+      } else {
+        toast.error('Please upload at least one image');
+        return;
+      }
       setShowImageModal(false);
       resetImageForm();
       fetchAlbums();
@@ -91,7 +107,7 @@ const AdminGallery = () => {
     setAlbumFormData({
       title: album.title,
       description: album.description || '',
-      cover_image: album.cover_image || '',
+      cover_image_url: album.cover_image_url || '',
       is_published: album.is_published,
     });
     setShowAlbumModal(true);
@@ -126,7 +142,7 @@ const AdminGallery = () => {
     setAlbumFormData({
       title: '',
       description: '',
-      cover_image: '',
+      cover_image_url: '',
       is_published: true,
     });
   };
@@ -138,6 +154,7 @@ const AdminGallery = () => {
       caption: '',
       display_order: 0,
     });
+    setUploadedImages([]);
   };
 
   const openAddImageModal = (albumId) => {
@@ -176,9 +193,9 @@ const AdminGallery = () => {
                 <div key={album.id} className="bg-white rounded-lg shadow overflow-hidden">
                   {/* Album Cover */}
                   <div className="h-48 bg-gray-200 relative">
-                    {album.cover_image ? (
+                    {album.cover_image_url ? (
                       <img
-                        src={album.cover_image}
+                        src={getImageUrl(album.cover_image_url)}
                         alt={album.title}
                         className="w-full h-full object-cover"
                       />
@@ -238,7 +255,7 @@ const AdminGallery = () => {
                         {album.images.slice(0, 4).map((image) => (
                           <div key={image.id} className="relative group">
                             <img
-                              src={image.image_url}
+                              src={getImageUrl(image.image_url)}
                               alt={image.caption}
                               className="w-full h-16 object-cover rounded"
                             />
@@ -294,11 +311,11 @@ const AdminGallery = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Upload Cover Image</label>
                     <FileUpload
-                      onUploadComplete={(url) => setAlbumFormData({ ...albumFormData, cover_image: url })}
+                      onUploadComplete={(url) => setAlbumFormData({ ...albumFormData, cover_image_url: url })}
                       accept="image/*"
                       label="Upload Cover Image"
                     />
-                    {albumFormData.cover_image && (
+                    {albumFormData.cover_image_url && (
                       <p className="text-sm text-green-600 mt-2">✓ Image uploaded</p>
                     )}
                   </div>
@@ -342,45 +359,102 @@ const AdminGallery = () => {
 
         {/* Image Modal */}
         {showImageModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <h2 className="text-2xl font-bold mb-4">Add Image to Album</h2>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+              <h2 className="text-2xl font-bold mb-4">Add Images to Album</h2>
               <form onSubmit={handleImageSubmit}>
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Upload Image *</label>
-                    <FileUpload
-                      onUploadComplete={(url) => setImageFormData({ ...imageFormData, image_url: url })}
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Upload Images *</label>
+                    <input
+                      type="file"
                       accept="image/*"
-                      label="Upload Image"
+                      multiple
+                      onChange={async (e) => {
+                        const files = Array.from(e.target.files);
+                        if (files.length === 0) return;
+
+                        toast.info(`Uploading ${files.length} image(s)...`);
+
+                        try {
+                          const uploaded = [];
+
+                          // Upload sequentially to avoid overwhelming the server
+                          for (let i = 0; i < files.length; i++) {
+                            const file = files[i];
+                            try {
+                              toast.info(`Uploading ${i + 1}/${files.length}: ${file.name}`);
+                              const response = await uploadService.uploadSingle(file);
+
+                              if (!response.data?.file_url) {
+                                throw new Error('No file_url in response');
+                              }
+
+                              uploaded.push({
+                                url: response.data.file_url,
+                                caption: file.name.replace(/\.[^/.]+$/, ''),
+                              });
+                            } catch (err) {
+                              console.error(`Failed to upload ${file.name}:`, err);
+                              toast.error(`Failed to upload ${file.name}: ${err?.message || 'Unknown error'}`);
+                            }
+                          }
+
+                          if (uploaded.length > 0) {
+                            setUploadedImages(uploaded);
+                            toast.success(`${uploaded.length} image(s) uploaded successfully!`);
+                          } else {
+                            toast.error('All uploads failed');
+                          }
+                        } catch (error) {
+                          console.error('Upload error details:', error);
+                          toast.error('Upload process failed');
+                        }
+                      }}
+                      className="w-full px-3 py-2 border-2 border-dashed border-gray-300 rounded-md hover:border-blue-400 cursor-pointer"
                     />
-                    {imageFormData.image_url && (
-                      <p className="text-sm text-green-600 mt-2">✓ Image uploaded</p>
-                    )}
+                    <p className="text-sm text-gray-500 mt-1">Select multiple images to upload at once</p>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Caption</label>
-                    <input
-                      type="text"
-                      name="caption"
-                      value={imageFormData.caption}
-                      onChange={handleImageChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
-                    <input
-                      type="number"
-                      name="display_order"
-                      value={imageFormData.display_order}
-                      onChange={handleImageChange}
-                      min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    />
-                  </div>
+                  {/* Image Previews */}
+                  {uploadedImages.length > 0 && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Uploaded Images ({uploadedImages.length})
+                      </label>
+                      <div className="grid grid-cols-3 gap-3 max-h-64 overflow-y-auto border border-gray-200 rounded-md p-3">
+                        {uploadedImages.map((img, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={getImageUrl(img.url)}
+                              alt={img.caption}
+                              className="w-full h-32 object-cover rounded"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setUploadedImages(uploadedImages.filter((_, i) => i !== index));
+                              }}
+                              className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <FaTrash className="text-xs" />
+                            </button>
+                            <input
+                              type="text"
+                              placeholder="Caption (optional)"
+                              value={img.caption}
+                              onChange={(e) => {
+                                const updated = [...uploadedImages];
+                                updated[index].caption = e.target.value;
+                                setUploadedImages(updated);
+                              }}
+                              className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-end gap-2 mt-6">
@@ -396,9 +470,10 @@ const AdminGallery = () => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    disabled={uploadedImages.length === 0}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                   >
-                    Add Image
+                    Add {uploadedImages.length} Image(s)
                   </button>
                 </div>
               </form>

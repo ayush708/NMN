@@ -8,11 +8,11 @@ import AdminHeader from '../components/AdminHeader';
 
 const AdminLayout = ({ children }) => {
   return (
-    <div className="flex">
+    <div className="flex min-h-screen bg-slate-50">
       <AdminSidebar />
-      <div className="flex-1 ml-64">
+      <div className="flex-1 ml-64 flex flex-col">
         <AdminHeader />
-        <main className="p-6 bg-gray-50 min-h-screen">{children}</main>
+        <main className="flex-1 p-6 overflow-auto">{children}</main>
       </div>
     </div>
   );

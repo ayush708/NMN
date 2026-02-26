@@ -1,13 +1,8 @@
-/**
- * Admin Messages Page
- * View and manage contact form submissions
- */
-
 import { useState, useEffect } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import { contactService } from '../../services';
 import { toast } from 'react-toastify';
-import { FaEnvelope, FaEnvelopeOpen, FaTrash, FaEye } from 'react-icons/fa';
+import { FaEnvelope, FaEnvelopeOpen, FaTrash } from 'react-icons/fa';
 
 const AdminMessages = () => {
   const [messages, setMessages] = useState([]);

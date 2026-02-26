@@ -8,6 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 const path = require('path');
 require('dotenv').config();
 
@@ -19,6 +20,17 @@ const routes = require('./src/routes');
 
 // Initialize express app
 const app = express();
+
+// HTTPS enforcement for production
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https') {
+      res.redirect(`https://${req.header('host')}${req.url}`);
+    } else {
+      next();
+    }
+  });
+}
 
 // Security middleware - Enhanced helmet configuration
 app.use(helmet({
@@ -46,11 +58,12 @@ app.use(helmet({
   xssFilter: true
 }));
 
-// CORS configuration - Allow both localhost and network IP
+// CORS configuration - Allow localhost and environment CLIENT_URL
 const allowedOrigins = [
   'http://localhost:5173',
-  'http://192.168.1.70:5173',
-  process.env.CLIENT_URL
+  'http://127.0.0.1:5173',
+  process.env.CLIENT_URL,
+  process.env.NETWORK_CLIENT_URL // Use env var for network access
 ].filter(Boolean);
 
 const corsOptions = {
@@ -76,6 +89,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
+// Data sanitization against XSS attacks
+app.use(xss());
+
 // Logging middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -83,8 +99,14 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('combined'));
 }
 
-// Static files - serve uploads directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Static files - serve uploads directory with security headers
+app.use('/uploads', (req, res, next) => {
+  // Prevent script execution from uploaded files
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Content-Security-Policy', "default-src 'none'; img-src 'self'; media-src 'self'; style-src 'none'; script-src 'none'");
+  res.setHeader('X-Frame-Options', 'DENY');
+  next();
+}, express.static(path.join(__dirname, 'uploads')));
 
 // API routes
 app.use('/api', routes);

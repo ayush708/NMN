@@ -1,12 +1,7 @@
-/**
- * Routes Index
- * Combine all routes
- */
-
 const express = require('express');
 const router = express.Router();
 
-// Import all route modules
+
 const authRoutes = require('./authRoutes');
 const programRoutes = require('./programRoutes');
 const eventRoutes = require('./eventRoutes');
@@ -18,8 +13,8 @@ const contactRoutes = require('./contactRoutes');
 const volunteerRoutes = require('./volunteerRoutes');
 const settingsRoutes = require('./settingsRoutes');
 const uploadRoutes = require('./uploadRoutes');
+const donationRoutes = require('./donationRoutes');
 
-// Mount routes
 router.use('/auth', authRoutes);
 router.use('/programs', programRoutes);
 router.use('/events', eventRoutes);
@@ -31,8 +26,8 @@ router.use('/contact', contactRoutes);
 router.use('/volunteer', volunteerRoutes);
 router.use('/settings', settingsRoutes);
 router.use('/upload', uploadRoutes);
+router.use('/donate', donationRoutes);
 
-// Health check route
 router.get('/health', (req, res) => {
   res.json({
     success: true,

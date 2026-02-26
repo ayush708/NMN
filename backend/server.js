@@ -48,8 +48,10 @@ const startServer = async () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`🌐 Local: http://localhost:${PORT}/api`);
-    console.log(`📱 Network: http://192.168.1.70:${PORT}/api`);
-    console.log(`🏥 Health check: http://192.168.1.70:${PORT}/api/health`);
+    if (process.env.NETWORK_HOST) {
+      console.log(`📱 Network: http://${process.env.NETWORK_HOST}:${PORT}/api`);
+      console.log(`🏥 Health check: http://${process.env.NETWORK_HOST}:${PORT}/api/health`);
+    }
     console.log('\n✓ Server is ready to accept requests from network\n');
   });
 

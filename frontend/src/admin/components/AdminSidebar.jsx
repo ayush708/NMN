@@ -15,7 +15,7 @@ import {
   FaUsers,
   FaEnvelope,
   FaCog,
-  FaSignOutAlt,
+  FaHeart,
 } from 'react-icons/fa';
 
 const AdminSidebar = () => {
@@ -30,36 +30,54 @@ const AdminSidebar = () => {
     { name: 'Resources', path: '/admin/resources', icon: FaFileAlt },
     { name: 'Gallery', path: '/admin/gallery', icon: FaImages },
     { name: 'Volunteers', path: '/admin/volunteers', icon: FaUsers },
-    { name: 'Messages', path: '/admin/messages', icon: FaEnvelope },
+    { name: 'Donations',  path: '/admin/donations',  icon: FaHeart },
+    { name: 'Messages',   path: '/admin/messages',   icon: FaEnvelope },
     { name: 'Settings', path: '/admin/settings', icon: FaCog },
   ];
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="w-64 bg-gray-900 text-white min-h-screen fixed left-0 top-0">
-      <div className="p-6">
-        <h2 className="text-2xl font-bold">NMN Admin</h2>
-        <p className="text-sm text-gray-400">Dashboard</p>
+    <aside className="w-64 bg-gray-950 text-white min-h-screen fixed left-0 top-0 flex flex-col border-r border-white/5">
+      {/* Brand */}
+      <div className="px-6 py-5 border-b border-white/5">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-lg bg-primary-600 flex items-center justify-center shrink-0">
+            <span className="text-white font-bold text-xs">NMN</span>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-white leading-tight">NMN Admin</p>
+            <p className="text-xs text-gray-500 leading-tight">Control Panel</p>
+          </div>
+        </div>
       </div>
 
-      <nav className="mt-6">
-        {menuItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={`flex items-center px-6 py-3 transition-colors ${
-              isActive(item.path)
-                ? 'bg-primary-600 text-white'
-                : 'text-gray-300 hover:bg-gray-800'
-            }`}
-          >
-            <item.icon className="mr-3" />
-            {item.name}
-          </Link>
-        ))}
+      {/* Nav */}
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        {menuItems.map((item) => {
+          const active = isActive(item.path);
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                active
+                  ? 'bg-primary-600 text-white'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <item.icon size={15} className={active ? 'text-white' : 'text-gray-500'} />
+              {item.name}
+            </Link>
+          );
+        })}
       </nav>
-    </div>
+
+      {/* Footer */}
+      <div className="px-6 py-4 border-t border-white/5">
+        <p className="text-xs text-gray-600">National Migrant Network</p>
+      </div>
+    </aside>
   );
 };
 

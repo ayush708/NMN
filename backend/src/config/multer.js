@@ -21,9 +21,13 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     let uploadPath = './uploads/';
 
-    if (file.mimetype.startsWith('image/')) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif'];
+    const videoExtensions = ['.mp4', '.mpeg', '.mov'];
+
+    if (file.mimetype.startsWith('image/') || imageExtensions.includes(ext)) {
       uploadPath += 'images';
-    } else if (file.mimetype.startsWith('video/')) {
+    } else if (file.mimetype.startsWith('video/') || videoExtensions.includes(ext)) {
       uploadPath += 'media';
     } else {
       uploadPath += 'documents';
@@ -41,7 +45,7 @@ const storage = multer.diskStorage({
 
 // File filter with MIME type and extension validation
 const fileFilter = (req, file, cb) => {
-  const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif'];
   const allowedDocTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
   const allowedVideoTypes = ['video/mp4', 'video/mpeg', 'video/quicktime'];
 
@@ -49,12 +53,26 @@ const fileFilter = (req, file, cb) => {
 
   // Security: Validate file extension to prevent MIME type spoofing
   const ext = path.extname(file.originalname).toLowerCase();
-  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.pdf', '.doc', '.docx', '.mp4', '.mpeg', '.mov'];
+  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif', '.pdf', '.doc', '.docx', '.mp4', '.mpeg', '.mov'];
 
-  if (allowedTypes.includes(file.mimetype) && allowedExtensions.includes(ext)) {
+  // Allow if extension is valid (HEIC files often have wrong MIME type)
+  if (allowedExtensions.includes(ext)) {
+    // Double-check: if MIME type is provided, it should match the file category
+    if (file.mimetype && !file.mimetype.startsWith('application/octet-stream') && !allowedTypes.includes(file.mimetype)) {
+      // MIME type exists but doesn't match - potential spoofing
+      const imageExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif'];
+      const isImageExt = imageExts.includes(ext);
+      const isImageMime = file.mimetype.startsWith('image/');
+
+      if (isImageExt && !isImageMime) {
+        // Image extension but non-image MIME - could be HEIC with octet-stream
+        return cb(null, true);
+      }
+      return cb(new Error('File type mismatch detected'), false);
+    }
     cb(null, true);
   } else {
-    cb(new Error('Invalid file type. Only images (jpg, png, gif, webp), PDFs, documents (doc, docx), and videos (mp4, mpeg, mov) are allowed.'), false);
+    cb(new Error('Invalid file type. Only images (jpg, png, gif, webp, heic, heif), PDFs, documents (doc, docx), and videos (mp4, mpeg, mov) are allowed.'), false);
   }
 };
 

@@ -38,82 +38,65 @@ const Footer = () => {
     { name: 'Gallery', path: '/gallery' },
   ];
 
+  const socialLinks = [
+    { key: 'facebook_url', icon: FaFacebook, label: 'Facebook' },
+    { key: 'twitter_url', icon: FaTwitter, label: 'Twitter' },
+    { key: 'instagram_url', icon: FaInstagram, label: 'Instagram' },
+    { key: 'linkedin_url', icon: FaLinkedin, label: 'LinkedIn' },
+    { key: 'youtube_url', icon: FaYoutube, label: 'YouTube' },
+  ];
+
   return (
-    <footer className="bg-gray-900 text-white mt-20">
-      <div className="container-custom py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* About */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">
-              {settings?.site_title || 'National Migrant Network'}
-            </h3>
-            <p className="text-gray-400 mb-4">
+    <footer className="bg-gray-950 text-white mt-24">
+      {/* Top accent line */}
+      <div className="h-px bg-gradient-to-r from-transparent via-primary-500/50 to-transparent" />
+
+      <div className="container-custom pt-14 pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
+
+          {/* Brand */}
+          <div className="lg:col-span-1">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-9 w-9 rounded-xl bg-primary-600 flex items-center justify-center shrink-0">
+                <span className="text-white font-bold text-sm">NMN</span>
+              </div>
+              <p className="font-bold text-white text-sm leading-tight">
+                {settings?.site_title || 'National Migrant Network'}
+              </p>
+            </div>
+            <p className="text-sm text-gray-400 leading-relaxed mb-6">
               {settings?.about_text ||
                 'Empowering migrant workers for human rights and social justice.'}
             </p>
-            <div className="flex space-x-4">
-              {settings?.facebook_url && (
-                <a
-                  href={settings.facebook_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition"
-                >
-                  <FaFacebook size={20} />
-                </a>
-              )}
-              {settings?.twitter_url && (
-                <a
-                  href={settings.twitter_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition"
-                >
-                  <FaTwitter size={20} />
-                </a>
-              )}
-              {settings?.instagram_url && (
-                <a
-                  href={settings.instagram_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition"
-                >
-                  <FaInstagram size={20} />
-                </a>
-              )}
-              {settings?.linkedin_url && (
-                <a
-                  href={settings.linkedin_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition"
-                >
-                  <FaLinkedin size={20} />
-                </a>
-              )}
-              {settings?.youtube_url && (
-                <a
-                  href={settings.youtube_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition"
-                >
-                  <FaYoutube size={20} />
-                </a>
+            <div className="flex items-center gap-3">
+              {socialLinks.map(({ key, icon: Icon, label }) =>
+                settings?.[key] ? (
+                  <a
+                    key={key}
+                    href={settings[key]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="h-9 w-9 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                  >
+                    <Icon size={16} />
+                  </a>
+                ) : null
               )}
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
+            <p className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">
+              Quick Links
+            </p>
+            <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="text-gray-400 hover:text-white transition"
+                    className="text-sm text-gray-400 hover:text-white transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -124,13 +107,15 @@ const Footer = () => {
 
           {/* Resources */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Resources</h3>
-            <ul className="space-y-2">
+            <p className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">
+              Resources
+            </p>
+            <ul className="space-y-2.5">
               {resources.map((link) => (
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="text-gray-400 hover:text-white transition"
+                    className="text-sm text-gray-400 hover:text-white transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -141,26 +126,51 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-            <ul className="space-y-2 text-gray-400">
+            <p className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">
+              Contact Us
+            </p>
+            <ul className="space-y-2.5">
               {settings?.contact_email && (
-                <li>{settings.contact_email}</li>
+                <li>
+                  <a
+                    href={`mailto:${settings.contact_email}`}
+                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                  >
+                    {settings.contact_email}
+                  </a>
+                </li>
               )}
               {settings?.contact_phone && (
-                <li>{settings.contact_phone}</li>
+                <li>
+                  <a
+                    href={`tel:${settings.contact_phone}`}
+                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                  >
+                    {settings.contact_phone}
+                  </a>
+                </li>
               )}
               {settings?.contact_address && (
-                <li className="text-sm">{settings.contact_address}</li>
+                <li className="text-sm text-gray-400 leading-relaxed">
+                  {settings.contact_address}
+                </li>
               )}
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>
+        {/* Bottom bar */}
+        <div className="border-t border-white/5 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <p className="text-xs text-gray-600">
             {settings?.footer_text ||
               `© ${new Date().getFullYear()} National Migrant Network. All rights reserved.`}
           </p>
+          <Link
+            to="/join"
+            className="text-xs font-medium text-primary-400 hover:text-primary-300 transition-colors"
+          >
+            Become a Volunteer →
+          </Link>
         </div>
       </div>
     </footer>

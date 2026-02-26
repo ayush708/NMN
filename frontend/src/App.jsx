@@ -23,6 +23,8 @@ import ELearningContent from './pages/ELearningContent';
 import Gallery from './pages/Gallery';
 import GalleryAlbum from './pages/GalleryAlbum';
 import Join from './pages/Join';
+import Donate from './pages/Donate';
+import DonateVerify from './pages/DonateVerify';
 
 // Admin Pages
 import AdminLogin from './admin/pages/AdminLogin';
@@ -31,6 +33,7 @@ import AdminPrograms from './admin/pages/AdminPrograms';
 import AdminEvents from './admin/pages/AdminEvents';
 import AdminNews from './admin/pages/AdminNews';
 import AdminVolunteers from './admin/pages/AdminVolunteers';
+import AdminDonations from './admin/pages/AdminDonations';
 import AdminMessages from './admin/pages/AdminMessages';
 import AdminSettings from './admin/pages/AdminSettings';
 import AdminELearning from './admin/pages/AdminELearning';
@@ -57,6 +60,8 @@ function App() {
         <Route path="/gallery/:slug" element={<GalleryAlbum />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/join" element={<Join />} />
+        <Route path="/donate" element={<Donate />} />
+        <Route path="/donate/verify" element={<DonateVerify />} />
 
         {/* Admin Login (Public) */}
         <Route path="/admin/login" element={<AdminLogin />} />
@@ -123,6 +128,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminVolunteers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/donations"
+          element={
+            <ProtectedRoute>
+              <AdminDonations />
             </ProtectedRoute>
           }
         />
