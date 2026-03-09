@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PublicLayout from '../components/layout/PublicLayout';
 import { elearningService } from '../services';
-import { FaBook, FaGraduationCap, FaHeart, FaBriefcase, FaDollarSign } from 'react-icons/fa';
+import { FaBook, FaGraduationCap, FaHeart, FaBriefcase, FaDollarSign, FaChevronRight } from 'react-icons/fa';
 
 const ELearning = () => {
   const [categories, setCategories] = useState([]);
@@ -38,14 +38,17 @@ const ELearning = () => {
       scale: FaGraduationCap,
     };
     const Icon = icons[iconName] || FaBook;
-    return <Icon className="text-4xl text-primary-600" />;
+    return <Icon className="text-3xl text-primary-600" />;
   };
 
   if (loading) {
     return (
       <PublicLayout>
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="text-2xl">Loading...</div>
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-10 w-10 rounded-full border-[3px] border-primary-200 border-t-primary-600 animate-spin" />
+            <p className="text-sm text-gray-400 font-medium">Loading...</p>
+          </div>
         </div>
       </PublicLayout>
     );
@@ -54,36 +57,46 @@ const ELearning = () => {
   return (
     <PublicLayout>
       {/* Page Header */}
-      <section className="bg-primary-600 text-white py-16">
-        <div className="container-custom">
-          <h1 className="text-4xl font-bold">E-Learning Center</h1>
-          <p className="text-xl mt-2">Learn and grow with our educational resources</p>
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white py-20 md:py-28">
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-primary-400/15 rounded-full blur-[120px]" />
+        </div>
+        <div className="container-custom relative fade-in-up">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-3">E-Learning Center</h1>
+          <p className="text-lg text-primary-200 max-w-xl">Learn and grow with our educational resources</p>
         </div>
       </section>
 
       {/* Categories Grid */}
       <div className="container-custom py-16">
-        <h2 className="text-3xl font-bold mb-8 text-center">Browse by Category</h2>
+        <div className="text-center mb-12">
+          <span className="section-tag">Explore</span>
+          <h2 className="section-title">Browse by Category</h2>
+        </div>
 
         {categories.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-xl text-gray-600">Learning categories will be available soon. Check back later!</p>
+          <div className="text-center py-20">
+            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+              <FaBook className="text-gray-400" size={20} />
+            </div>
+            <p className="text-lg text-gray-500 font-medium">Learning categories will be available soon.</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {categories.map((category) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+            {categories.map((category, index) => (
               <Link
                 key={category.id}
                 to={`/elearning/${category.slug}`}
-                className="card p-8 text-center hover:scale-105 transition"
+                className="card card-hover group p-8 text-center fade-in-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="flex justify-center mb-4">
+                <div className="h-16 w-16 rounded-2xl bg-primary-50 border border-primary-100 flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
                   {getIcon(category.icon)}
                 </div>
-                <h3 className="text-2xl font-semibold mb-3">{category.name}</h3>
-                <p className="text-gray-600 mb-4">{category.description}</p>
-                <span className="text-primary-600 font-medium">
-                  Explore →
+                <h3 className="text-xl font-bold mb-3 group-hover:text-primary-700 transition-colors">{category.name}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed mb-5">{category.description}</p>
+                <span className="inline-flex items-center gap-1.5 text-sm font-bold text-primary-600 group-hover:gap-3 transition-all duration-300">
+                  Explore <FaChevronRight size={10} />
                 </span>
               </Link>
             ))}

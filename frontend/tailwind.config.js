@@ -18,6 +18,7 @@ export default {
           700: '#15803d',
           800: '#166534',
           900: '#14532d',
+          950: '#052e16',
         },
         secondary: {
           50: '#fef2f2',
@@ -36,9 +37,10 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        'card': '0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08)',
-        'card-hover': '0 4px 6px rgba(0,0,0,0.07), 0 20px 48px rgba(0,0,0,0.14)',
-        'glow': '0 0 30px rgba(99, 102, 241, 0.18)',
+        'card': '0 0 0 1px rgba(0,0,0,0.03), 0 2px 4px rgba(0,0,0,0.05), 0 12px 24px rgba(0,0,0,0.05)',
+        'card-hover': '0 0 0 1px rgba(0,0,0,0.03), 0 4px 8px rgba(0,0,0,0.06), 0 24px 48px rgba(0,0,0,0.1)',
+        'glow': '0 0 40px rgba(34, 197, 94, 0.15)',
+        'elevated': '0 20px 60px -12px rgba(0,0,0,0.15)',
       },
     },
   },

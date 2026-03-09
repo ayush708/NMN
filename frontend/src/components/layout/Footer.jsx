@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube, FaArrowRight } from 'react-icons/fa';
 import { settingsService } from '../../services';
 
 const Footer = () => {
@@ -47,17 +47,21 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-950 text-white mt-24">
-      {/* Top accent line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-primary-500/50 to-transparent" />
+    <footer className="relative bg-gray-950 text-white mt-24 overflow-hidden">
+      {/* Decorative gradient orbs */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-600/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-purple-600/5 rounded-full blur-3xl" />
 
-      <div className="container-custom pt-14 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
+      {/* Top accent gradient */}
+      <div className="h-px bg-gradient-to-r from-transparent via-primary-500/40 to-transparent" />
+
+      <div className="container-custom relative pt-16 pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
 
           {/* Brand */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-9 w-9 rounded-xl bg-primary-600 flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shrink-0 shadow-lg">
                 <span className="text-white font-bold text-sm">NMN</span>
               </div>
               <p className="font-bold text-white text-sm leading-tight">
@@ -65,10 +69,9 @@ const Footer = () => {
               </p>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed mb-6">
-              {settings?.about_text ||
-                'Empowering migrant workers for human rights and social justice.'}
+              {settings?.about_text || 'Empowering migrant workers for human rights and social justice.'}
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               {socialLinks.map(({ key, icon: Icon, label }) =>
                 settings?.[key] ? (
                   <a
@@ -77,9 +80,9 @@ const Footer = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="h-9 w-9 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                    className="h-9 w-9 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 hover:-translate-y-0.5 transition-all duration-300"
                   >
-                    <Icon size={16} />
+                    <Icon size={15} />
                   </a>
                 ) : null
               )}
@@ -88,16 +91,14 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">
-              Quick Links
-            </p>
-            <ul className="space-y-2.5">
+            <p className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-5">Quick Links</p>
+            <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
-                  >
+                  <Link to={link.path} className="text-sm text-gray-400 hover:text-white transition-colors duration-200 inline-flex items-center gap-1 group">
+                    <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200">
+                      <FaArrowRight size={8} />
+                    </span>
                     {link.name}
                   </Link>
                 </li>
@@ -107,16 +108,14 @@ const Footer = () => {
 
           {/* Resources */}
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">
-              Resources
-            </p>
-            <ul className="space-y-2.5">
+            <p className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-5">Resources</p>
+            <ul className="space-y-3">
               {resources.map((link) => (
                 <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
-                  >
+                  <Link to={link.path} className="text-sm text-gray-400 hover:text-white transition-colors duration-200 inline-flex items-center gap-1 group">
+                    <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200">
+                      <FaArrowRight size={8} />
+                    </span>
                     {link.name}
                   </Link>
                 </li>
@@ -126,50 +125,29 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">
-              Contact Us
-            </p>
-            <ul className="space-y-2.5">
+            <p className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-5">Contact Us</p>
+            <ul className="space-y-3">
               {settings?.contact_email && (
-                <li>
-                  <a
-                    href={`mailto:${settings.contact_email}`}
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
-                  >
-                    {settings.contact_email}
-                  </a>
-                </li>
+                <li><a href={`mailto:${settings.contact_email}`} className="text-sm text-gray-400 hover:text-white transition-colors duration-200">{settings.contact_email}</a></li>
               )}
               {settings?.contact_phone && (
-                <li>
-                  <a
-                    href={`tel:${settings.contact_phone}`}
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
-                  >
-                    {settings.contact_phone}
-                  </a>
-                </li>
+                <li><a href={`tel:${settings.contact_phone}`} className="text-sm text-gray-400 hover:text-white transition-colors duration-200">{settings.contact_phone}</a></li>
               )}
               {settings?.contact_address && (
-                <li className="text-sm text-gray-400 leading-relaxed">
-                  {settings.contact_address}
-                </li>
+                <li className="text-sm text-gray-400 leading-relaxed">{settings.contact_address}</li>
               )}
             </ul>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/5 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div className="border-t border-white/5 mt-14 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-xs text-gray-600">
-            {settings?.footer_text ||
-              `© ${new Date().getFullYear()} National Migrant Network. All rights reserved.`}
+            {settings?.footer_text || `\u00A9 ${new Date().getFullYear()} National Migrant Network. All rights reserved.`}
           </p>
-          <Link
-            to="/join"
-            className="text-xs font-medium text-primary-400 hover:text-primary-300 transition-colors"
-          >
-            Become a Volunteer →
+          <Link to="/join" className="text-xs font-semibold text-primary-400 hover:text-primary-300 transition-colors inline-flex items-center gap-1.5 group">
+            Become a Volunteer
+            <FaArrowRight size={9} className="group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>
       </div>

@@ -30,109 +30,69 @@ const About = () => {
   if (loading) {
     return (
       <PublicLayout>
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="text-2xl">Loading...</div>
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-10 w-10 rounded-full border-[3px] border-primary-200 border-t-primary-600 animate-spin" />
+            <p className="text-sm text-gray-400 font-medium">Loading...</p>
+          </div>
         </div>
       </PublicLayout>
     );
   }
 
+  const sections = [
+    { title: 'Our Mission', text: settings?.mission, image: settings?.mission_image, reverse: false },
+    { title: 'Our Vision', text: settings?.vision, image: settings?.vision_image, reverse: true },
+    { title: 'Our Values', text: settings?.values, image: settings?.values_image, reverse: false, whitespace: true },
+    { title: 'Who We Are', text: settings?.about_text, image: settings?.about_image, reverse: true },
+  ].filter(s => s.text);
+
   return (
     <PublicLayout>
       {/* Page Header */}
-      <section className="bg-primary-600 text-white py-16">
-        <div className="container-custom">
-          <h1 className="text-4xl font-bold">About Us</h1>
-          <p className="text-xl mt-2">Learn about our mission and values</p>
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white py-20 md:py-28">
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-primary-400/15 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] bg-emerald-400/10 rounded-full blur-[100px]" />
+        </div>
+        <div className="container-custom relative fade-in-up">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-3">About Us</h1>
+          <p className="text-lg text-primary-200 max-w-xl">Learn about our mission, vision, and values</p>
         </div>
       </section>
 
       {/* Content */}
-      <div className="container-custom py-16">
-        <div className="max-w-4xl mx-auto">
-          {/* Mission */}
-          {settings?.mission && (
-            <section className="mb-12">
-              <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
-              <div className="grid md:grid-cols-2 gap-8 items-center">
-                <div>
-                  <p className="text-gray-700 text-lg leading-relaxed">{settings.mission}</p>
+      <div className="container-custom py-20">
+        <div className="max-w-5xl mx-auto space-y-24">
+          {sections.map((section, index) => (
+            <section
+              key={section.title}
+              className="fade-in-up"
+              style={{ animationDelay: `${index * 0.15}s` }}
+            >
+              <div className={`grid md:grid-cols-2 gap-12 items-center ${section.reverse ? 'md:grid-flow-dense' : ''}`}>
+                <div className={section.reverse ? 'md:col-start-2' : ''}>
+                  <span className="section-tag">{section.title}</span>
+                  <h2 className="text-3xl font-extrabold text-gray-900 mb-5">{section.title}</h2>
+                  <p className={`text-gray-600 text-lg leading-relaxed ${section.whitespace ? 'whitespace-pre-line' : ''}`}>
+                    {section.text}
+                  </p>
                 </div>
-                {settings.mission_image && (
-                  <div>
-                    <img
-                      src={getImageUrl(settings.mission_image)}
-                      alt="Our Mission"
-                      className="rounded-lg shadow-lg w-full h-auto"
-                    />
+                {section.image && (
+                  <div className={`${section.reverse ? 'md:col-start-1 md:row-start-1' : ''}`}>
+                    <div className="relative group">
+                      <div className="absolute -inset-4 bg-gradient-to-br from-primary-100 to-primary-50 rounded-[2rem] -z-10 group-hover:scale-[1.02] transition-transform duration-500" />
+                      <img
+                        src={getImageUrl(section.image)}
+                        alt={section.title}
+                        className="rounded-3xl shadow-card w-full h-auto object-cover"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
             </section>
-          )}
-
-          {/* Vision */}
-          {settings?.vision && (
-            <section className="mb-12">
-              <h2 className="text-3xl font-bold mb-4">Our Vision</h2>
-              <div className="grid md:grid-cols-2 gap-8 items-center">
-                {settings.vision_image && (
-                  <div className="order-2 md:order-1">
-                    <img
-                      src={getImageUrl(settings.vision_image)}
-                      alt="Our Vision"
-                      className="rounded-lg shadow-lg w-full h-auto"
-                    />
-                  </div>
-                )}
-                <div className="order-1 md:order-2">
-                  <p className="text-gray-700 text-lg leading-relaxed">{settings.vision}</p>
-                </div>
-              </div>
-            </section>
-          )}
-
-          {/* Values */}
-          {settings?.values && (
-            <section className="mb-12">
-              <h2 className="text-3xl font-bold mb-4">Our Values</h2>
-              <div className="grid md:grid-cols-2 gap-8 items-center">
-                <div>
-                  <p className="text-gray-700 text-lg leading-relaxed whitespace-pre-line">{settings.values}</p>
-                </div>
-                {settings.values_image && (
-                  <div>
-                    <img
-                      src={getImageUrl(settings.values_image)}
-                      alt="Our Values"
-                      className="rounded-lg shadow-lg w-full h-auto"
-                    />
-                  </div>
-                )}
-              </div>
-            </section>
-          )}
-
-          {/* About Text */}
-          {settings?.about_text && (
-            <section className="mb-12">
-              <h2 className="text-3xl font-bold mb-4">Who We Are</h2>
-              <div className="grid md:grid-cols-2 gap-8 items-center">
-                {settings.about_image && (
-                  <div className="order-2 md:order-1">
-                    <img
-                      src={getImageUrl(settings.about_image)}
-                      alt="Who We Are"
-                      className="rounded-lg shadow-lg w-full h-auto"
-                    />
-                  </div>
-                )}
-                <div className="order-1 md:order-2">
-                  <p className="text-gray-700 text-lg leading-relaxed">{settings.about_text}</p>
-                </div>
-              </div>
-            </section>
-          )}
+          ))}
         </div>
       </div>
     </PublicLayout>

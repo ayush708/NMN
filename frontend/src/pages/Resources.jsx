@@ -32,11 +32,13 @@ const Resources = () => {
   };
 
   const getFileIcon = (fileType) => {
-    if (fileType === 'pdf') return <FaFilePdf className="text-red-600 text-4xl" />;
-    if (fileType === 'doc') return <FaFileWord className="text-blue-600 text-4xl" />;
-    if (fileType === 'image') return <FaFileImage className="text-green-600 text-4xl" />;
-    if (fileType === 'video') return <FaFileVideo className="text-purple-600 text-4xl" />;
-    return <FaDownload className="text-gray-600 text-4xl" />;
+    const icons = {
+      pdf: <FaFilePdf className="text-red-500" size={22} />,
+      doc: <FaFileWord className="text-blue-500" size={22} />,
+      image: <FaFileImage className="text-emerald-500" size={22} />,
+      video: <FaFileVideo className="text-purple-500" size={22} />,
+    };
+    return icons[fileType] || <FaDownload className="text-gray-400" size={22} />;
   };
 
   const formatFileSize = (bytes) => {
@@ -45,11 +47,23 @@ const Resources = () => {
     return `${mb} MB`;
   };
 
+  const filters = [
+    { key: 'all', label: 'All Resources' },
+    { key: 'report', label: 'Reports' },
+    { key: 'publication', label: 'Publications' },
+    { key: 'policy', label: 'Policy Documents' },
+    { key: 'guide', label: 'Guides' },
+    { key: 'other', label: 'Other' },
+  ];
+
   if (loading) {
     return (
       <PublicLayout>
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="text-2xl">Loading...</div>
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-10 w-10 rounded-full border-[3px] border-primary-200 border-t-primary-600 animate-spin" />
+            <p className="text-sm text-gray-400 font-medium">Loading...</p>
+          </div>
         </div>
       </PublicLayout>
     );
@@ -58,65 +72,33 @@ const Resources = () => {
   return (
     <PublicLayout>
       {/* Page Header */}
-      <section className="bg-primary-600 text-white py-16">
-        <div className="container-custom">
-          <h1 className="text-4xl font-bold">Resources</h1>
-          <p className="text-xl mt-2">Download reports, publications, and policy documents</p>
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white py-20 md:py-28">
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-primary-400/15 rounded-full blur-[120px]" />
+        </div>
+        <div className="container-custom relative fade-in-up">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-3">Resources</h1>
+          <p className="text-lg text-primary-200 max-w-xl">Download reports, publications, and policy documents</p>
         </div>
       </section>
 
       {/* Filter Buttons */}
-      <div className="bg-gray-50 border-b">
+      <div className="border-b border-gray-100 bg-white/80 backdrop-blur-xl sticky top-20 lg:top-[88px] z-30">
         <div className="container-custom py-4">
           <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-lg ${
-                filter === 'all' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              All Resources
-            </button>
-            <button
-              onClick={() => setFilter('report')}
-              className={`px-4 py-2 rounded-lg ${
-                filter === 'report' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              Reports
-            </button>
-            <button
-              onClick={() => setFilter('publication')}
-              className={`px-4 py-2 rounded-lg ${
-                filter === 'publication' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              Publications
-            </button>
-            <button
-              onClick={() => setFilter('policy')}
-              className={`px-4 py-2 rounded-lg ${
-                filter === 'policy' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              Policy Documents
-            </button>
-            <button
-              onClick={() => setFilter('guide')}
-              className={`px-4 py-2 rounded-lg ${
-                filter === 'guide' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              Guides
-            </button>
-            <button
-              onClick={() => setFilter('other')}
-              className={`px-4 py-2 rounded-lg ${
-                filter === 'other' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              Other
-            </button>
+            {filters.map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border ${
+                  filter === f.key
+                    ? 'bg-primary-600 text-white border-primary-600 shadow-md'
+                    : 'bg-white text-gray-600 border-gray-200 hover:border-primary-300 hover:text-primary-700 hover:bg-primary-50'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -124,26 +106,33 @@ const Resources = () => {
       {/* Resources List */}
       <div className="container-custom py-16">
         {resources.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-xl text-gray-600">No {filter !== 'all' ? filter + 's' : 'resources'} available yet.</p>
+          <div className="text-center py-20">
+            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+              <FaDownload className="text-gray-400" size={20} />
+            </div>
+            <p className="text-lg text-gray-500 font-medium">No {filter !== 'all' ? filter + 's' : 'resources'} available yet.</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {resources.map((resource) => (
-              <div key={resource.id} className="card p-6 hover:shadow-xl transition">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+            {resources.map((resource, index) => (
+              <div
+                key={resource.id}
+                className="card card-hover p-7 fade-in-up"
+                style={{ animationDelay: `${index * 0.08}s` }}
+              >
+                <div className="flex items-start gap-5">
+                  <div className="h-14 w-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0">
                     {getFileIcon(resource.file_type)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="mb-2">
-                      <span className="text-xs px-2 py-1 bg-primary-100 text-primary-800 rounded-full">
+                      <span className="text-xs font-bold px-3 py-1 bg-primary-50 text-primary-700 rounded-full border border-primary-100 capitalize">
                         {resource.category}
                       </span>
                     </div>
-                    <h3 className="text-lg font-semibold mb-2 line-clamp-2">{resource.title}</h3>
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-3">{resource.description}</p>
-                    <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                    <h3 className="text-lg font-bold mb-2 line-clamp-2">{resource.title}</h3>
+                    <p className="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed">{resource.description}</p>
+                    <div className="flex items-center justify-between text-xs text-gray-400 mb-5">
                       <span>{formatFileSize(resource.file_size)}</span>
                       <span>{resource.download_count} downloads</span>
                     </div>
@@ -151,9 +140,9 @@ const Resources = () => {
                       href={getImageUrl(resource.file_url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn btn-primary w-full text-sm flex items-center justify-center"
+                      className="btn btn-primary w-full text-sm"
                     >
-                      <FaDownload className="mr-2" />
+                      <FaDownload size={12} />
                       Download
                     </a>
                   </div>
