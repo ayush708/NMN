@@ -36,6 +36,7 @@ import AdminSettings from './admin/pages/AdminSettings';
 import AdminELearning from './admin/pages/AdminELearning';
 import AdminResources from './admin/pages/AdminResources';
 import AdminGallery from './admin/pages/AdminGallery';
+import AdminProfile from './admin/pages/AdminProfile';
 
 function App() {
   return (
@@ -139,6 +140,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/profile"
+          element={
+            <ProtectedRoute>
+              <AdminProfile />
             </ProtectedRoute>
           }
         />

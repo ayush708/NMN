@@ -15,6 +15,7 @@ import {
   FaUsers,
   FaEnvelope,
   FaCog,
+  FaUserCircle,
   FaSignOutAlt,
 } from 'react-icons/fa';
 
@@ -31,6 +32,7 @@ const AdminSidebar = () => {
     { name: 'Gallery', path: '/admin/gallery', icon: FaImages },
     { name: 'Volunteers', path: '/admin/volunteers', icon: FaUsers },
     { name: 'Messages', path: '/admin/messages', icon: FaEnvelope },
+    { name: 'Profile', path: '/admin/profile', icon: FaUserCircle },
     { name: 'Settings', path: '/admin/settings', icon: FaCog },
   ];
 
