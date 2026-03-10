@@ -16,7 +16,6 @@ import {
   FaEnvelope,
   FaCog,
   FaUserCircle,
-  FaSignOutAlt,
 } from 'react-icons/fa';
 
 const AdminSidebar = () => {
