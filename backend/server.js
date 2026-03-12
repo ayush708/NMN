@@ -7,9 +7,11 @@
 const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
 
+// Load .env BEFORE any other imports so DATABASE_URL is available
+require('dotenv').config();
+
 const app = require('./app');
 const { pool } = require('./src/config/database');
-require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
 
@@ -32,12 +34,9 @@ const startServer = async () => {
   const dbConnected = await testDatabaseConnection();
 
   if (!dbConnected) {
-    console.log('\nPlease check your database configuration in .env file:');
-    console.log('- DB_HOST');
-    console.log('- DB_PORT');
-    console.log('- DB_NAME');
-    console.log('- DB_USER');
-    console.log('- DB_PASSWORD');
+    console.log('\nPlease check your DATABASE_URL environment variable.');
+    console.log('On Render: set it in Dashboard > Environment.');
+    console.log('Locally: set it in backend/.env file.');
     process.exit(1);
   }
 

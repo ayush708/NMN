@@ -3,13 +3,13 @@
  * PostgreSQL connection setup (Supabase-ready for Render)
  */
 
-const dns = require('dns');
-const path = require('path');
 const { Pool } = require('pg');
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
-
-// Force IPv4 to avoid IPv6 connectivity issues on Render/cloud platforms
-dns.setDefaultResultOrder('ipv4first');
+// dotenv is loaded in server.js before this module is imported
+// When running standalone (node database.js), load it here as fallback
+if (!process.env.DATABASE_URL) {
+  const path = require('path');
+  require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+}
 
 // Enable SSL by default in production (Supabase requires it)
 const useSSL = process.env.DB_SSL !== 'false';
