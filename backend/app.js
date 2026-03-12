@@ -64,8 +64,12 @@ app.use(helmet({
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
+  'https://www.nmnhas.org.np',
+  'http://www.nmnhas.org.np',
+  'https://nmnhas.org.np',
+  'http://nmnhas.org.np',
   process.env.CLIENT_URL,
-  process.env.NETWORK_CLIENT_URL // Use env var for network access
+  process.env.NETWORK_CLIENT_URL
 ].filter(Boolean);
 
 const corsOptions = {
