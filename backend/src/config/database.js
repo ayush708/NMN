@@ -6,21 +6,15 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-// PostgreSQL connection pool with SSL for Supabase
+// Use DATABASE_URL for easier connection (works with Supabase)
 const pool = new Pool({
-  host: process.env.DB_HOST
-    ? process.env.DB_HOST.replace(/\[.*\]/, '') // Remove IPv6 brackets if any
-    : 'localhost',
-  port: Number(process.env.DB_PORT) || 5432,
-  database: process.env.DB_NAME || 'postgres',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // Required for Supabase
+  },
   max: 20, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000, // Timeout for remote DB
-  ssl: {
-    rejectUnauthorized: false, // Required for Supabase hosted DB
-  },
+  connectionTimeoutMillis: 10000,
 });
 
 // Test database connection
