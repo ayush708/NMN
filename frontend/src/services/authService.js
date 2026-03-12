@@ -30,16 +30,6 @@ const authService = {
     localStorage.removeItem('token');
   },
 
-  // Logout — clears httpOnly cookie on the backend
-  logout: async () => {
-    try {
-      await api.post('/auth/logout');
-    } catch (e) {
-      // Ignore network errors — still clear local state
-    }
-    localStorage.removeItem('admin');
-  },
-
   // Get current admin profile from server
   getProfile: async () => {
     return await api.get('/auth/profile');
