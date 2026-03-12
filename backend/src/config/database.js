@@ -3,25 +3,27 @@
  * PostgreSQL connection setup (Supabase-ready for Render)
  */
 
+const path = require('path');
 const { Pool } = require('pg');
-require('dotenv').config();
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
-// Use DATABASE_URL for easier connection (works with Supabase)
+// Determine SSL usage from environment variable
+const useSSL = process.env.DB_SSL === 'true';
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Required for Supabase
-  },
-  max: 20, // Maximum number of clients in the pool
+  ssl: useSSL ? { rejectUnauthorized: false } : false,
+  max: 20,               // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
+  connectionTimeoutMillis: 10000, // Timeout for remote DB
 });
 
-// Test database connection
+// Event: successful connection
 pool.on('connect', () => {
   console.log('✓ Connected to PostgreSQL database (Supabase)');
 });
 
+// Event: unexpected error
 pool.on('error', (err) => {
   console.error('✗ Unexpected database error:', err);
   process.exit(-1);
@@ -29,11 +31,8 @@ pool.on('error', (err) => {
 
 // Query helper function
 const query = async (text, params) => {
-  const start = Date.now();
   try {
     const result = await pool.query(text, params);
-    const duration = Date.now() - start;
-    console.log('Executed query', { text, duration, rows: result.rowCount });
     return result;
   } catch (error) {
     console.error('Database query error:', error);
@@ -41,7 +40,7 @@ const query = async (text, params) => {
   }
 };
 
-// Transaction helper
+// Transaction helper function
 const transaction = async (callback) => {
   const client = await pool.connect();
   try {
@@ -57,8 +56,25 @@ const transaction = async (callback) => {
   }
 };
 
+// Export helpers
 module.exports = {
   pool,
   query,
   transaction,
 };
+
+// =========================
+// TEST CONNECTION (temporary)
+// Run `node database.js` to test locally
+// =========================
+if (require.main === module) {
+  pool.query('SELECT NOW()')
+    .then(res => {
+      console.log('✓ DB Connected! Current time:', res.rows[0]);
+      process.exit();
+    })
+    .catch(err => {
+      console.error('✗ DB connection failed:', err);
+      process.exit(1);
+    });
+}
