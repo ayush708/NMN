@@ -3,19 +3,23 @@
  * PostgreSQL connection setup (Supabase-ready for Render)
  */
 
+const dns = require('dns');
 const path = require('path');
 const { Pool } = require('pg');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
-// Determine SSL usage from environment variable
-const useSSL = process.env.DB_SSL === 'true';
+// Force IPv4 to avoid IPv6 connectivity issues on Render/cloud platforms
+dns.setDefaultResultOrder('ipv4first');
+
+// Enable SSL by default in production (Supabase requires it)
+const useSSL = process.env.DB_SSL !== 'false';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: useSSL ? { rejectUnauthorized: false } : false,
-  max: 20,               // Maximum number of clients in the pool
+  max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000, // Timeout for remote DB
+  connectionTimeoutMillis: 10000,
 });
 
 // Event: successful connection
