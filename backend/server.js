@@ -3,6 +3,10 @@
  * Start the Express server
  */
 
+// Force IPv4 before any other imports (fixes Render IPv6 connectivity to Supabase)
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
+
 const app = require('./app');
 const { pool } = require('./src/config/database');
 require('dotenv').config();
