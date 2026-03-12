@@ -1,26 +1,29 @@
 /**
  * Database Configuration
- * PostgreSQL connection setup
+ * PostgreSQL connection setup (Supabase-ready)
  */
 
 const { Pool } = require('pg');
 require('dotenv').config();
 
-// PostgreSQL connection pool
+// PostgreSQL connection pool with SSL for Supabase
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'nmn_db',
+  database: process.env.DB_NAME || 'postgres',
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD,
   max: 20, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+  ssl: {
+    rejectUnauthorized: false, // Important for Supabase hosted DB
+  },
 });
 
 // Test database connection
 pool.on('connect', () => {
-  console.log('✓ Connected to PostgreSQL database');
+  console.log('✓ Connected to PostgreSQL database (Supabase)');
 });
 
 pool.on('error', (err) => {
