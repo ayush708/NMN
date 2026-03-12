@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if admin is logged in
+    // Restore admin profile from localStorage (non-sensitive display data only)
     const currentAdmin = authService.getCurrentAdmin();
     if (currentAdmin) {
       setAdmin(currentAdmin);
@@ -35,8 +35,8 @@ export const AuthProvider = ({ children }) => {
     return response;
   };
 
-  const logout = () => {
-    authService.logout();
+  const logout = async () => {
+    await authService.logout();
     setAdmin(null);
   };
 

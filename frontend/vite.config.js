@@ -12,7 +12,7 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    host: '0.0.0.0', // Allow access from network (mobile devices)
+    host: 'localhost', // Restrict to localhost only; use 0.0.0.0 only on trusted networks
     // No proxy needed - using direct API URLs from .env
   },
 })

@@ -39,12 +39,8 @@ const submitVolunteer = async (req, res) => {
       // Invalid date format
       errorMessage = 'Invalid date format. Please check the date of birth field.';
     } else if (error.code === '23502') {
-      // Not null violation
-      const field = error.column || 'field';
-      errorMessage = `${field} is required. Please fill in all required fields.`;
-    } else if (error.message) {
-      // Show database error if available
-      errorMessage = `Error: ${error.message}`;
+      // Not null violation — do not expose column name
+      errorMessage = 'A required field is missing. Please fill in all required fields.';
     }
 
     return errorResponse(res, errorMessage, 400);

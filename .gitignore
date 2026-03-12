@@ -51,3 +51,8 @@ backend/uploads/
 .temp/
 tmp/
 tmpclaude-*
+
+# Python bytecode (do not commit)
+__pycache__/
+*.pyc
+*.pyo

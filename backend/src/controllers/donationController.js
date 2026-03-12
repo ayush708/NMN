@@ -134,7 +134,19 @@ const initiateEsewa = async (req, res) => {
 // ─── eSewa: Verify Payment ───────────────────────────────────────────────────
 const verifyEsewa = async (req, res) => {
   try {
-    const { transaction_uuid, total_amount } = req.body;
+    const { transaction_uuid } = req.body;
+
+    // Fetch the amount from our database — never trust client-supplied amount
+    const donationRecord = await query(
+      `SELECT * FROM donations WHERE transaction_id = $1 AND status = 'pending'`,
+      [transaction_uuid]
+    );
+
+    if (donationRecord.rows.length === 0) {
+      return errorResponse(res, 'Donation record not found or already processed', 404);
+    }
+
+    const total_amount = donationRecord.rows[0].amount;
 
     // Verify with eSewa
     const verifyUrl = process.env.ESEWA_VERIFY_URL ||

@@ -6,23 +6,27 @@
 import api from './api';
 
 const authService = {
-  // Admin login
+  // Admin login — token is set as httpOnly cookie by the backend
   login: async (credentials) => {
     const response = await api.post('/auth/login', credentials);
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
+    // Store only non-sensitive admin profile for UI display (not the token)
+    if (response.data?.admin) {
       localStorage.setItem('admin', JSON.stringify(response.data.admin));
     }
     return response;
   },
 
-  // Logout
-  logout: () => {
-    localStorage.removeItem('token');
+  // Logout — clears httpOnly cookie on the backend
+  logout: async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (e) {
+      // Ignore network errors — still clear local state
+    }
     localStorage.removeItem('admin');
   },
 
-  // Get current admin profile
+  // Get current admin profile from server
   getProfile: async () => {
     return await api.get('/auth/profile');
   },
@@ -37,9 +41,9 @@ const authService = {
     return await api.put('/auth/change-password', data);
   },
 
-  // Check if logged in
+  // Check if logged in (based on stored admin profile)
   isAuthenticated: () => {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem('admin');
   },
 
   // Get current admin

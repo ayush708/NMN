@@ -90,9 +90,7 @@ process.on('uncaughtException', (error) => {
 process.on('unhandledRejection', (error) => {
   console.error('❌ UNHANDLED REJECTION! Shutting down...');
   console.error(error);
-  server.close(() => {
-    process.exit(1);
-  });
+  process.exit(1);
 });
 
 // Start the server

@@ -11,6 +11,7 @@ const { authenticate } = require('../middleware/auth');
 const { authLimiter } = require('../middleware/rateLimiter');
 const {
   login,
+  logout,
   getProfile,
   updateProfile,
   changePassword
@@ -30,12 +31,13 @@ const updateProfileValidation = [
 const changePasswordValidation = [
   body('currentPassword').notEmpty().withMessage('Current password is required'),
   body('newPassword')
-    .isLength({ min: 6 })
-    .withMessage('New password must be at least 6 characters long')
+    .isLength({ min: 12 })
+    .withMessage('New password must be at least 12 characters long')
 ];
 
 // Public routes (with rate limiting for security)
 router.post('/login', authLimiter, loginValidation, validate, login);
+router.post('/logout', logout);
 
 // Protected routes
 router.get('/profile', authenticate, getProfile);

@@ -38,17 +38,7 @@ const verifyToken = (token) => {
   }
 };
 
-/**
- * Decode JWT token without verification
- * @param {String} token - JWT token
- * @returns {Object} Decoded payload
- */
-const decodeToken = (token) => {
-  return jwt.decode(token);
-};
-
 module.exports = {
   generateToken,
-  verifyToken,
-  decodeToken
+  verifyToken
 };

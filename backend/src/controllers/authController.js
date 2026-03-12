@@ -53,6 +53,15 @@ const login = async (req, res) => {
       role: admin.role
     });
 
+    // Set token as httpOnly cookie (not accessible to JavaScript — XSS safe)
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 8 * 60 * 60 * 1000 // 8 hours in ms
+    };
+    res.cookie('token', token, cookieOptions);
+
     // Return response without password
     const { password: _, ...adminData } = admin;
 
@@ -156,8 +165,22 @@ const changePassword = async (req, res) => {
   }
 };
 
+/**
+ * Logout — clear auth cookie
+ * POST /api/auth/logout
+ */
+const logout = (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  });
+  return successResponse(res, null, 'Logged out successfully');
+};
+
 module.exports = {
   login,
+  logout,
   getProfile,
   updateProfile,
   changePassword

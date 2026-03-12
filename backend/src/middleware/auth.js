@@ -8,18 +8,26 @@ const { errorResponse } = require('../utils/response');
 const { query } = require('../config/database');
 
 /**
- * Verify JWT token from request header
+ * Verify JWT token from httpOnly cookie or fallback Authorization header
  */
 const authenticate = async (req, res, next) => {
   try {
-    // Get token from header
-    const authHeader = req.headers.authorization;
+    let token;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return errorResponse(res, 'No token provided', 401);
+    // Prefer httpOnly cookie (not accessible to JavaScript — XSS safe)
+    if (req.cookies && req.cookies.token) {
+      token = req.cookies.token;
+    } else {
+      // Fallback: Bearer token in Authorization header (for API clients / tools)
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+      }
     }
 
-    const token = authHeader.split(' ')[1];
+    if (!token) {
+      return errorResponse(res, 'No token provided', 401);
+    }
 
     // Verify token
     const decoded = verifyToken(token);

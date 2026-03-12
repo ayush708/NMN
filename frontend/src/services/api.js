@@ -12,21 +12,8 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Send httpOnly auth cookie on every request
 });
-
-// Request interceptor - Add auth token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
 
 // Response interceptor - Handle errors
 api.interceptors.response.use(
@@ -35,7 +22,6 @@ api.interceptors.response.use(
     if (error.response) {
       // Handle 401 Unauthorized
       if (error.response.status === 401) {
-        localStorage.removeItem('token');
         localStorage.removeItem('admin');
         window.location.href = '/admin/login';
       }
