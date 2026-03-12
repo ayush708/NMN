@@ -1,6 +1,6 @@
 /**
  * Database Configuration
- * PostgreSQL connection setup (Supabase-ready)
+ * PostgreSQL connection setup (Supabase-ready for Render)
  */
 
 const { Pool } = require('pg');
@@ -8,16 +8,18 @@ require('dotenv').config();
 
 // PostgreSQL connection pool with SSL for Supabase
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
+  host: process.env.DB_HOST
+    ? process.env.DB_HOST.replace(/\[.*\]/, '') // Remove IPv6 brackets to force IPv4
+    : 'localhost',
+  port: Number(process.env.DB_PORT) || 5432,
   database: process.env.DB_NAME || 'postgres',
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD,
   max: 20, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 10000, // Increased timeout for remote DB
   ssl: {
-    rejectUnauthorized: false, // Important for Supabase hosted DB
+    rejectUnauthorized: false, // Required for Supabase hosted DB
   },
 });
 
@@ -64,5 +66,5 @@ const transaction = async (callback) => {
 module.exports = {
   pool,
   query,
-  transaction
+  transaction,
 };
