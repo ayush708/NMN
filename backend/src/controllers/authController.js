@@ -53,11 +53,11 @@ const login = async (req, res) => {
       role: admin.role
     });
 
-    // Set token as httpOnly cookie (not accessible to JavaScript — XSS safe)
+    // Set token as httpOnly cookie
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', // 'none' required for cross-site
       maxAge: 8 * 60 * 60 * 1000 // 8 hours in ms
     };
     res.cookie('token', token, cookieOptions);

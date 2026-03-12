@@ -9,11 +9,25 @@ const authService = {
   // Admin login — token is set as httpOnly cookie by the backend
   login: async (credentials) => {
     const response = await api.post('/auth/login', credentials);
-    // Store only non-sensitive admin profile for UI display (not the token)
     if (response.data?.admin) {
       localStorage.setItem('admin', JSON.stringify(response.data.admin));
     }
+    // Store token for Authorization header fallback (cross-domain)
+    if (response.data?.token) {
+      localStorage.setItem('token', response.data.token);
+    }
     return response;
+  },
+
+  // Logout — clears httpOnly cookie on the backend
+  logout: async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (e) {
+      // Ignore network errors — still clear local state
+    }
+    localStorage.removeItem('admin');
+    localStorage.removeItem('token');
   },
 
   // Logout — clears httpOnly cookie on the backend
