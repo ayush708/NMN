@@ -9,7 +9,7 @@ require('dotenv').config();
 // PostgreSQL connection pool with SSL for Supabase
 const pool = new Pool({
   host: process.env.DB_HOST
-    ? process.env.DB_HOST.replace(/\[.*\]/, '') // Remove IPv6 brackets to force IPv4
+    ? process.env.DB_HOST.replace(/\[.*\]/, '') // Remove IPv6 brackets if any
     : 'localhost',
   port: Number(process.env.DB_PORT) || 5432,
   database: process.env.DB_NAME || 'postgres',
@@ -17,7 +17,7 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   max: 20, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000, // Increased timeout for remote DB
+  connectionTimeoutMillis: 10000, // Timeout for remote DB
   ssl: {
     rejectUnauthorized: false, // Required for Supabase hosted DB
   },
