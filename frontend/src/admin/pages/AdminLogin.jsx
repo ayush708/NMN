@@ -29,8 +29,8 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-primary-600 to-primary-800">
-      <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-primary-600 to-primary-800 px-4">
+      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Admin Login</h1>
           <p className="text-gray-600 mt-2">National Migrant Network</p>
@@ -71,12 +71,6 @@ const AdminLogin = () => {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>Default credentials:</p>
-          <p>Email: admin@nmn.org</p>
-          <p>Password: Admin@123</p>
-        </div>
       </div>
     </div>
   );

@@ -35,6 +35,15 @@ export const AuthProvider = ({ children }) => {
     return response;
   };
 
+  const refreshProfile = async () => {
+    const response = await authService.getProfile();
+    if (response?.data) {
+      setAdmin(response.data);
+      localStorage.setItem('admin', JSON.stringify(response.data));
+    }
+    return response;
+  };
+
   const logout = async () => {
     await authService.logout();
     setAdmin(null);
@@ -45,6 +54,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     login,
     logout,
+    refreshProfile,
     isAuthenticated: !!admin,
   };
 

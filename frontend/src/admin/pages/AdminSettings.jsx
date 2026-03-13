@@ -6,13 +6,23 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import FileUpload from '../components/FileUpload';
-import { settingsService } from '../../services';
+import { settingsService, authService } from '../../services';
+import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 
 const AdminSettings = () => {
+  const { refreshProfile } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [passwordSaving, setPasswordSaving] = useState(false);
   const [statistics, setStatistics] = useState([]);
+  const [profileForm, setProfileForm] = useState({ name: '', email: '' });
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
   const [formData, setFormData] = useState({
     site_title: '',
     site_tagline: '',
@@ -41,7 +51,20 @@ const AdminSettings = () => {
   useEffect(() => {
     fetchSettings();
     fetchStatistics();
+    fetchProfile();
   }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const response = await authService.getProfile();
+      setProfileForm({
+        name: response?.data?.name || '',
+        email: response?.data?.email || '',
+      });
+    } catch (error) {
+      toast.error('Failed to load admin profile');
+    }
+  };
 
   const fetchSettings = async () => {
     try {
@@ -100,6 +123,58 @@ const AdminSettings = () => {
     }
   };
 
+  const handleProfileInputChange = (e) => {
+    setProfileForm({ ...profileForm, [e.target.name]: e.target.value });
+  };
+
+  const handlePasswordInputChange = (e) => {
+    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
+  };
+
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
+    setProfileSaving(true);
+
+    try {
+      await authService.updateProfile(profileForm);
+      await refreshProfile();
+      toast.success('Admin profile updated successfully');
+    } catch (error) {
+      toast.error(error.message || 'Failed to update admin profile');
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+
+    if (passwordForm.newPassword.length < 12) {
+      toast.error('New password must be at least 12 characters long');
+      return;
+    }
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast.error('New password and confirm password must match');
+      return;
+    }
+
+    setPasswordSaving(true);
+
+    try {
+      await authService.changePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      });
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      toast.success('Password changed successfully');
+    } catch (error) {
+      toast.error(error.message || 'Failed to change password');
+    } finally {
+      setPasswordSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <AdminLayout>
@@ -111,7 +186,92 @@ const AdminSettings = () => {
   return (
     <AdminLayout>
       <div>
-        <h1 className="text-3xl font-bold mb-6">Site Settings</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6">Site Settings</h1>
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Admin Account</h2>
+            <form onSubmit={handleProfileSubmit} className="space-y-4">
+              <div>
+                <label className="label">Admin Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={profileForm.name}
+                  onChange={handleProfileInputChange}
+                  className="input"
+                  required
+                />
+              </div>
+              <div>
+                <label className="label">Admin Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={profileForm.email}
+                  onChange={handleProfileInputChange}
+                  className="input"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={profileSaving}
+                className="btn btn-primary"
+              >
+                {profileSaving ? 'Updating...' : 'Update Account'}
+              </button>
+            </form>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Security</h2>
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <div>
+                <label className="label">Current Password</label>
+                <input
+                  type="password"
+                  name="currentPassword"
+                  value={passwordForm.currentPassword}
+                  onChange={handlePasswordInputChange}
+                  className="input"
+                  required
+                />
+              </div>
+              <div>
+                <label className="label">New Password</label>
+                <input
+                  type="password"
+                  name="newPassword"
+                  value={passwordForm.newPassword}
+                  onChange={handlePasswordInputChange}
+                  className="input"
+                  minLength={12}
+                  required
+                />
+              </div>
+              <div>
+                <label className="label">Confirm New Password</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={passwordForm.confirmPassword}
+                  onChange={handlePasswordInputChange}
+                  className="input"
+                  minLength={12}
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={passwordSaving}
+                className="btn btn-primary"
+              >
+                {passwordSaving ? 'Changing...' : 'Change Password'}
+              </button>
+            </form>
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
@@ -369,7 +529,7 @@ const AdminSettings = () => {
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold mb-4">Statistics (Homepage)</h2>
             <p className="text-sm text-gray-600 mb-4">
-              These numbers appear on the homepage. Update them to reflect your organization's actual statistics.
+                These numbers appear on the homepage. Update them to reflect your organization&apos;s actual statistics.
             </p>
             <div className="space-y-4">
               {statistics.map((stat) => (

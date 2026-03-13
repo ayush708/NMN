@@ -5,7 +5,7 @@
 
 import { useAuth } from '../../context/AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FaSignOutAlt } from 'react-icons/fa';
+import { FaBars, FaSignOutAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const pageTitles = {
@@ -22,7 +22,7 @@ const pageTitles = {
   '/admin/settings': 'Settings',
 };
 
-const AdminHeader = () => {
+const AdminHeader = ({ onMenuClick }) => {
   const { admin, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,8 +40,16 @@ const AdminHeader = () => {
     : 'A';
 
   return (
-    <header className="bg-white border-b border-gray-100 px-6 py-3.5 flex justify-between items-center sticky top-0 z-40">
-      <div>
+    <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-3.5 flex justify-between items-center sticky top-0 z-20">
+      <div className="flex items-center gap-3 min-w-0">
+        <button
+          type="button"
+          className="md:hidden inline-flex items-center justify-center h-9 w-9 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100"
+          onClick={onMenuClick}
+          aria-label="Toggle sidebar"
+        >
+          <FaBars size={14} />
+        </button>
         <h1 className="text-base font-semibold text-gray-900">{pageTitle}</h1>
       </div>
 
