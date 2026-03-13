@@ -21,15 +21,20 @@ const FileUpload = ({ onUploadComplete, accept = "image/*", label = "Upload File
       setUploadComplete(false);
 
       const response = await uploadService.uploadSingle(file);
+      const fileUrl = response?.data?.file_url || response?.file_url;
+
+      if (!fileUrl) {
+        throw new Error('Upload succeeded but file URL was not returned');
+      }
 
       // Pass the file URL to parent component
-      onUploadComplete(response.data.file_url);
+      onUploadComplete(fileUrl);
 
       setUploadComplete(true);
       setTimeout(() => setUploadComplete(false), 2000);
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload file');
+      alert(error?.message || 'Failed to upload file');
     } finally {
       setUploading(false);
     }
