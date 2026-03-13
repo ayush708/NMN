@@ -5,7 +5,12 @@
 
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const PROD_API_URL = 'https://nmn-production.up.railway.app/api';
+const isNmnProductionHost =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'www.nmnhas.org.np' || window.location.hostname === 'nmnhas.org.np');
+
+const API_URL = import.meta.env.VITE_API_URL || (isNmnProductionHost ? PROD_API_URL : 'http://localhost:5000/api');
 
 const api = axios.create({
   baseURL: API_URL,
@@ -37,7 +42,12 @@ api.interceptors.response.use(
       }
       return Promise.reject(error.response.data);
     }
-    return Promise.reject(error);
+
+    // Normalize network-level failures to a user-friendly message
+    return Promise.reject({
+      success: false,
+      message: 'Cannot reach server. Please check internet connection and try again.',
+    });
   }
 );
 
