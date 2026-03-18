@@ -113,129 +113,164 @@ const AdminNews = () => {
 
   return (
     <AdminLayout>
-      <div>
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Manage News</h1>
-          <button onClick={() => { resetForm(); setShowModal(true); }} className="btn btn-primary flex items-center">
-            <FaPlus className="mr-2" /> Add News Article
+      <div className="space-y-4 sm:space-y-6">
+        {/* Header with Add Button */}
+        <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Manage News</h1>
+          <button 
+            onClick={() => { resetForm(); setShowModal(true); }} 
+            className="btn btn-primary flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 w-full sm:w-auto min-h-10 text-sm sm:text-base"
+          >
+            <FaPlus size={16} /> Add Article
           </button>
         </div>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Views</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {newsList.length === 0 ? (
+        {/* Table Wrapper with Responsive Scroll */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
                 <tr>
-                  <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
-                    No news articles found. Create your first article!
-                  </td>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Title</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Category</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden sm:table-cell">Views</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden md:table-cell">Date</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+                  <th className="px-3 sm:px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
                 </tr>
-              ) : (
-                newsList.map((news) => (
-                  <tr key={news.id}>
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">{news.title}</div>
-                      <div className="text-sm text-gray-500">{news.summary?.substring(0, 50)}...</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {news.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <FaEye className="inline mr-1" /> {news.views}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(news.published_date).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {news.is_published ? (
-                        <span className="text-green-500 font-semibold">Published</span>
-                      ) : (
-                        <span className="text-gray-500">Draft</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button onClick={() => handleEdit(news)} className="text-blue-600 hover:text-blue-900 mr-4">
-                        <FaEdit />
-                      </button>
-                      <button onClick={() => handleDelete(news.id)} className="text-red-600 hover:text-red-900">
-                        <FaTrash />
-                      </button>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {newsList.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="px-3 sm:px-6 py-8 text-center text-gray-500 text-sm sm:text-base">
+                      No news articles found. Create your first article!
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  newsList.map((news) => (
+                    <tr key={news.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-3 sm:px-6 py-4 text-sm">
+                        <div className="font-medium text-gray-900 line-clamp-1">{news.title}</div>
+                        <div className="text-gray-500 text-xs line-clamp-1">{news.summary?.substring(0, 50)}...</div>
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 text-sm">
+                        <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 whitespace-nowrap">
+                          {news.category}
+                        </span>
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600 hidden sm:table-cell whitespace-nowrap">
+                        <div className="flex items-center gap-1 text-xs sm:text-sm">
+                          <FaEye size={12} className="sm:size-4" /> {news.views}
+                        </div>
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600 hidden md:table-cell whitespace-nowrap">
+                        {new Date(news.published_date).toLocaleDateString()}
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 text-sm">
+                        {news.is_published ? (
+                          <span className="text-green-600 font-medium text-xs sm:text-sm">Published</span>
+                        ) : (
+                          <span className="text-gray-500 text-xs sm:text-sm">Draft</span>
+                        )}
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button 
+                            onClick={() => handleEdit(news)} 
+                            className="inline-flex items-center justify-center p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Edit"
+                          >
+                            <FaEdit size={16} />
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(news.id)} 
+                            className="inline-flex items-center justify-center p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Delete"
+                          >
+                            <FaTrash size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        {/* Modal */}
+        {/* Modal - Improved for mobile */}
         {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <h2 className="text-2xl font-bold mb-4">
-                  {editingNews ? 'Edit News Article' : 'Create News Article'}
-                </h2>
+          <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-3 sm:p-4 z-50">
+            <div className="bg-white rounded-t-lg sm:rounded-lg w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl sm:shadow-2xl">
+              <div className="p-4 sm:p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                    {editingNews ? 'Edit News Article' : 'Create News Article'}
+                  </h2>
+                  <button
+                    onClick={() => { setShowModal(false); resetForm(); }}
+                    className="text-gray-400 hover:text-gray-600 p-2"
+                    aria-label="Close"
+                  >
+                    ✕
+                  </button>
+                </div>
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="label">Title *</label>
-                    <input type="text" name="title" value={formData.title} onChange={handleChange} required className="input" />
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">Title *</label>
+                    <input type="text" name="title" value={formData.title} onChange={handleChange} required className="input w-full" />
                   </div>
+
                   <div>
-                    <label className="label">Summary</label>
-                    <textarea name="summary" value={formData.summary} onChange={handleChange} rows="2" className="input" placeholder="Brief summary for listing pages" />
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">Summary</label>
+                    <textarea name="summary" value={formData.summary} onChange={handleChange} rows="2" className="input w-full" placeholder="Brief summary for listing pages" />
                   </div>
+
                   <div>
-                    <label className="label">Content *</label>
-                    <textarea name="content" value={formData.content} onChange={handleChange} required rows="8" className="input" placeholder="Full article content" />
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">Content *</label>
+                    <textarea name="content" value={formData.content} onChange={handleChange} required rows="6" className="input w-full" placeholder="Full article content" />
                   </div>
+
                   <div>
-                    <label className="label">Upload Image</label>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">Upload Image</label>
                     <FileUpload
                       onUploadComplete={(url) => setFormData({ ...formData, image_url: url })}
                       accept="image/*"
                       label="Upload Image"
                     />
                     {formData.image_url && (
-                      <p className="text-sm text-green-600 mt-2">✓ Image uploaded</p>
+                      <p className="text-sm text-green-600 mt-2 font-medium">✓ Image uploaded</p>
                     )}
                   </div>
+
                   <div>
-                    <label className="label">Category</label>
-                    <select name="category" value={formData.category} onChange={handleChange} className="input">
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">Category</label>
+                    <select name="category" value={formData.category} onChange={handleChange} className="input w-full">
                       <option value="news">News</option>
                       <option value="press-release">Press Release</option>
                       <option value="announcement">Announcement</option>
                       <option value="update">Update</option>
                     </select>
                   </div>
-                  <div className="flex items-center space-x-6">
-                    <label className="flex items-center">
-                      <input type="checkbox" name="is_featured" checked={formData.is_featured} onChange={handleChange} className="mr-2" />
-                      Featured Article
+
+                  <div className="space-y-3 sm:flex sm:gap-6">
+                    <label className="flex items-center gap-2.5 cursor-pointer">
+                      <input type="checkbox" name="is_featured" checked={formData.is_featured} onChange={handleChange} className="w-4 h-4" />
+                      <span className="text-sm font-medium text-gray-700">Featured Article</span>
                     </label>
-                    <label className="flex items-center">
-                      <input type="checkbox" name="is_published" checked={formData.is_published} onChange={handleChange} className="mr-2" />
-                      Published
+                    <label className="flex items-center gap-2.5 cursor-pointer">
+                      <input type="checkbox" name="is_published" checked={formData.is_published} onChange={handleChange} className="w-4 h-4" />
+                      <span className="text-sm font-medium text-gray-700">Published</span>
                     </label>
                   </div>
-                  <div className="flex justify-end space-x-4 mt-6">
-                    <button type="button" onClick={() => { setShowModal(false); resetForm(); }} className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+
+                  <div className="flex flex-col-reverse sm:flex-row gap-3 justify-end mt-6 pt-4 border-t">
+                    <button type="button" onClick={() => { setShowModal(false); resetForm(); }} className="px-4 sm:px-6 py-2.5 min-h-10 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-sm">
                       Cancel
                     </button>
-                    <button type="submit" className="btn btn-primary">
+                    <button type="submit" className="btn btn-primary px-4 sm:px-6 py-2.5 min-h-10 font-medium text-sm">
                       {editingNews ? 'Update' : 'Create'} Article
                     </button>
                   </div>

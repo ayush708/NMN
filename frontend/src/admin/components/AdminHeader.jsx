@@ -40,40 +40,41 @@ const AdminHeader = ({ onMenuClick }) => {
     : 'A';
 
   return (
-    <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-3.5 flex justify-between items-center sticky top-0 z-20">
-      <div className="flex items-center gap-3 min-w-0">
+    <header className="bg-white border-b border-gray-100 px-3 sm:px-5 md:px-6 py-4 flex justify-between items-center sticky top-0 z-20 gap-2">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
         <button
           type="button"
-          className="md:hidden inline-flex items-center justify-center h-9 w-9 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100"
+          className="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100 transition-colors flex-shrink-0"
           onClick={onMenuClick}
           aria-label="Toggle sidebar"
         >
-          <FaBars size={14} />
+          <FaBars size={15} />
         </button>
-        <h1 className="text-base font-semibold text-gray-900">{pageTitle}</h1>
+        <h1 className="text-base sm:text-lg font-semibold text-gray-900 truncate">{pageTitle}</h1>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
         {/* User info */}
-        <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
             <span className="text-xs font-semibold text-primary-700">{initials}</span>
           </div>
-          <div className="hidden sm:block">
-            <p className="text-sm font-medium text-gray-800 leading-tight">{admin?.name}</p>
-            <p className="text-xs text-gray-400 leading-tight">{admin?.email}</p>
+          <div className="hidden md:block min-w-0">
+            <p className="text-sm font-medium text-gray-800 leading-tight truncate">{admin?.name}</p>
+            <p className="text-xs text-gray-400 leading-tight truncate">{admin?.email}</p>
           </div>
         </div>
 
-        <div className="h-6 w-px bg-gray-200" />
+        <div className="hidden sm:block h-6 w-px bg-gray-200" />
 
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-2 min-h-10 text-sm font-medium text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
           title="Logout"
+          aria-label="Logout"
         >
-          <FaSignOutAlt size={14} />
+          <FaSignOutAlt size={15} />
           <span className="hidden sm:inline">Logout</span>
         </button>
       </div>

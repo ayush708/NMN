@@ -76,42 +76,46 @@ const AdminDashboard = () => {
 
   return (
     <AdminLayout>
-      <div>
-        <h1 className="text-3xl font-bold mb-8">Dashboard Overview</h1>
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard Overview</h1>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        {/* Stats Cards Grid */}
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
           {statCards.map((card, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className={`${card.color} p-3 rounded-lg text-white`}>
-                  <card.icon className="text-2xl" />
+            <div key={index} className="bg-white rounded-lg shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow border border-gray-100">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className={`${card.color} p-2.5 sm:p-3 rounded-lg text-white`}>
+                  <card.icon className="text-lg sm:text-2xl" />
                 </div>
               </div>
-              <h3 className="text-gray-600 text-sm font-medium">{card.title}</h3>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{card.value}</p>
+              <h3 className="text-xs sm:text-sm font-medium text-gray-600">{card.title}</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{card.value}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
-            <div className="space-y-3">
-              <a href="/admin/programs" className="block p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
+        {/* Quick Actions & Recent Activity Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-100">
+            <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-900">Quick Actions</h2>
+            <div className="space-y-2 sm:space-y-3">
+              <a href="/admin/programs" className="block p-3 sm:p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base text-blue-900 border border-blue-200">
                 Create New Program
               </a>
-              <a href="/admin/events" className="block p-3 bg-green-50 rounded-lg hover:bg-green-100 transition">
+              <a href="/admin/events" className="block p-3 sm:p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base text-green-900 border border-green-200">
                 Add New Event
               </a>
-              <a href="/admin/news" className="block p-3 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition">
+              <a href="/admin/news" className="block p-3 sm:p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base text-yellow-900 border border-yellow-200">
                 Publish News Article
               </a>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
-            <p className="text-gray-600">No recent activity to display.</p>
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-100">
+            <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-900">Recent Activity</h2>
+            <p className="text-sm sm:text-base text-gray-600">No recent activity to display.</p>
           </div>
         </div>
       </div>
