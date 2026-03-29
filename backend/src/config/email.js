@@ -7,16 +7,15 @@ const nodemailer = require('nodemailer');
 
 // Create reusable transporter
 const createTransporter = () => {
-  // For development: Use Gmail or any SMTP service
-  // For production: Use services like SendGrid, AWS SES, etc.
+  // Default to Brevo SMTP, but keep this configurable for any SMTP provider.
 
   const config = {
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    host: process.env.EMAIL_HOST || 'smtp-relay.brevo.com',
     port: process.env.EMAIL_PORT || 587,
-    secure: false, // true for 465, false for other ports
+    secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD, // App password for Gmail
+      pass: process.env.EMAIL_PASSWORD,
     },
   };
 

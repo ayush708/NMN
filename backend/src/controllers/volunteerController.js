@@ -5,7 +5,11 @@
 
 const { query } = require('../config/database');
 const { successResponse, errorResponse, paginatedResponse } = require('../utils/response');
-const { sendVolunteerApprovalEmail } = require('../services/emailService');
+const {
+  sendVolunteerApprovalEmail,
+  sendVolunteerSubmissionAcknowledgment,
+  sendVolunteerSubmissionAdminNotification,
+} = require('../services/emailService');
 
 // Submit volunteer application (Public)
 const submitVolunteer = async (req, res) => {
@@ -23,6 +27,26 @@ const submitVolunteer = async (req, res) => {
       [name, email, phone, address, city, state, country, date_of_birth,
        occupation, organization, skills, experience, availability, motivation, how_heard]
     );
+
+    const volunteer = {
+      ...result.rows[0],
+      phone,
+      city,
+      country,
+      occupation,
+      availability,
+      motivation,
+    };
+
+    // Send emails as non-blocking best-effort actions.
+    try {
+      await Promise.allSettled([
+        sendVolunteerSubmissionAcknowledgment(volunteer),
+        sendVolunteerSubmissionAdminNotification(volunteer),
+      ]);
+    } catch (emailError) {
+      console.error('⚠️ Volunteer submitted but email notifications failed:', emailError.message);
+    }
 
     return successResponse(res, result.rows[0], 'Volunteer application submitted successfully', 201);
 

@@ -5,6 +5,136 @@
 
 const { createTransporter, getSenderEmail, getOrgName } = require('../config/email');
 
+const getAdminNotificationEmail = () => {
+  return process.env.ADMIN_NOTIFICATION_EMAIL || process.env.EMAIL_ADMIN_TO || getSenderEmail();
+};
+
+// Send volunteer submission acknowledgment email to applicant
+const sendVolunteerSubmissionAcknowledgment = async (volunteer) => {
+  const transporter = createTransporter();
+
+  if (!transporter) {
+    console.log('📧 Email not configured. Skipping volunteer submission acknowledgment.');
+    return { success: false, message: 'Email service not configured' };
+  }
+
+  try {
+    const { name, email } = volunteer;
+    const orgName = getOrgName();
+
+    const mailOptions = {
+      from: `"${orgName}" <${getSenderEmail()}>`,
+      to: email,
+      subject: `${orgName} - We received your volunteer request`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+            .card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 24px; }
+            .title { font-size: 22px; font-weight: 700; margin: 0 0 10px; color: #111827; }
+            .footer { margin-top: 20px; font-size: 13px; color: #6b7280; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <h1 class="title">Thank you for volunteering, ${name}!</h1>
+            <p>We have successfully received your volunteer application for <strong>${orgName}</strong>.</p>
+            <p>Our team will review your application and contact you soon with next steps.</p>
+            <p>If you need any help, you can reply through our contact channels on the website.</p>
+            <p>Best regards,<br /><strong>${orgName} Team</strong></p>
+          </div>
+          <p class="footer">This is an automated email confirmation.</p>
+        </body>
+        </html>
+      `,
+      text: `Hi ${name},\n\nWe have received your volunteer application for ${orgName}. Our team will review it and contact you soon with next steps.\n\nBest regards,\n${orgName} Team`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Volunteer submission acknowledgment sent:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('❌ Error sending volunteer submission acknowledgment:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Send volunteer submission notification to admin inbox
+const sendVolunteerSubmissionAdminNotification = async (volunteer) => {
+  const transporter = createTransporter();
+
+  if (!transporter) {
+    console.log('📧 Email not configured. Skipping volunteer admin notification.');
+    return { success: false, message: 'Email service not configured' };
+  }
+
+  try {
+    const orgName = getOrgName();
+    const adminEmail = getAdminNotificationEmail();
+    const {
+      name,
+      email,
+      phone,
+      city,
+      country,
+      occupation,
+      availability,
+      motivation,
+      id,
+      created_at,
+    } = volunteer;
+
+    const submittedAt = created_at ? new Date(created_at).toLocaleString() : new Date().toLocaleString();
+
+    const mailOptions = {
+      from: `"${orgName}" <${getSenderEmail()}>`,
+      to: adminEmail,
+      subject: `New volunteer request: ${name}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px; }
+            .card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            td { border-bottom: 1px solid #f3f4f6; padding: 8px 0; vertical-align: top; }
+            td:first-child { width: 180px; color: #6b7280; font-weight: 600; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <h2 style="margin: 0 0 8px;">New Volunteer Request</h2>
+            <p style="margin: 0 0 16px; color: #6b7280;">A new volunteer form has been submitted.</p>
+            <table>
+              <tr><td>Applicant ID</td><td>${id || 'N/A'}</td></tr>
+              <tr><td>Name</td><td>${name || 'N/A'}</td></tr>
+              <tr><td>Email</td><td>${email || 'N/A'}</td></tr>
+              <tr><td>Phone</td><td>${phone || 'N/A'}</td></tr>
+              <tr><td>Location</td><td>${[city, country].filter(Boolean).join(', ') || 'N/A'}</td></tr>
+              <tr><td>Occupation</td><td>${occupation || 'N/A'}</td></tr>
+              <tr><td>Availability</td><td>${availability || 'N/A'}</td></tr>
+              <tr><td>Motivation</td><td>${motivation || 'N/A'}</td></tr>
+              <tr><td>Submitted At</td><td>${submittedAt}</td></tr>
+            </table>
+          </div>
+        </body>
+        </html>
+      `,
+      text: `New volunteer request\n\nName: ${name || 'N/A'}\nEmail: ${email || 'N/A'}\nPhone: ${phone || 'N/A'}\nLocation: ${[city, country].filter(Boolean).join(', ') || 'N/A'}\nOccupation: ${occupation || 'N/A'}\nAvailability: ${availability || 'N/A'}\nMotivation: ${motivation || 'N/A'}\nSubmitted At: ${submittedAt}`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Volunteer admin notification sent:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('❌ Error sending volunteer admin notification:', error);
+    return { success: false, error: error.message };
+  }
+};
+
 // Send volunteer approval email
 const sendVolunteerApprovalEmail = async (volunteer) => {
   const transporter = createTransporter();
@@ -199,5 +329,7 @@ const sendContactAcknowledgment = async (contact) => {
 
 module.exports = {
   sendVolunteerApprovalEmail,
-  sendContactAcknowledgment
+  sendContactAcknowledgment,
+  sendVolunteerSubmissionAcknowledgment,
+  sendVolunteerSubmissionAdminNotification
 };
