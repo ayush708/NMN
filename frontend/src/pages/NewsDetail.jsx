@@ -70,6 +70,11 @@ const NewsDetail = () => {
               <img
                 src={getImageUrl(news.image_url)}
                 alt={news.title}
+                width="1280"
+                height="720"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 className="w-full h-80 md:h-96 object-cover"
               />
             </div>

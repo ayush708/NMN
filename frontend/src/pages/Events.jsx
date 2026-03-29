@@ -108,6 +108,10 @@ const Events = () => {
                       <img
                         src={getImageUrl(event.image_url)}
                         alt={event.title}
+                        width="640"
+                        height="416"
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />

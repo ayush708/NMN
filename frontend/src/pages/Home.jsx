@@ -145,7 +145,15 @@ const Home = () => {
                 <Link key={program.id} to={`/programs/${program.slug}`} className="card card-hover group overflow-hidden fade-in-up" style={{ animationDelay: `${index * 0.15}s` }}>
                   {program.image_url && (
                     <div className="overflow-hidden h-52 relative">
-                      <img src={getImageUrl(program.image_url)} alt={program.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <img
+                        src={getImageUrl(program.image_url)}
+                        alt={program.title}
+                        width="640"
+                        height="416"
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
                   )}
@@ -182,7 +190,15 @@ const Home = () => {
                 <Link key={item.id} to={`/news/${item.slug}`} className="card card-hover group overflow-hidden fade-in-up" style={{ animationDelay: `${index * 0.15}s` }}>
                   {item.image_url && (
                     <div className="overflow-hidden h-52 relative">
-                      <img src={getImageUrl(item.image_url)} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <img
+                        src={getImageUrl(item.image_url)}
+                        alt={item.title}
+                        width="640"
+                        height="416"
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
                     </div>
                   )}
                   <div className="p-7">

@@ -177,22 +177,22 @@ const Contact = () => {
                   <h3 className="text-lg font-extrabold mb-4">Follow Us</h3>
                   <div className="flex gap-2.5">
                     {settings.facebook_url && (
-                      <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 hover:bg-blue-100 transition-colors">
+                      <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook page" title="Facebook" className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 hover:bg-blue-100 transition-colors">
                         <FaFacebook size={16} />
                       </a>
                     )}
                     {settings.twitter_url && (
-                      <a href={settings.twitter_url} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-500 hover:bg-sky-100 transition-colors">
+                      <a href={settings.twitter_url} target="_blank" rel="noopener noreferrer" aria-label="Visit our X (Twitter) page" title="X (Twitter)" className="h-10 w-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-500 hover:bg-sky-100 transition-colors">
                         <FaTwitter size={16} />
                       </a>
                     )}
                     {settings.instagram_url && (
-                      <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-center text-pink-600 hover:bg-pink-100 transition-colors">
+                      <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram page" title="Instagram" className="h-10 w-10 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-center text-pink-600 hover:bg-pink-100 transition-colors">
                         <FaInstagram size={16} />
                       </a>
                     )}
                     {settings.linkedin_url && (
-                      <a href={settings.linkedin_url} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-700 hover:bg-blue-100 transition-colors">
+                      <a href={settings.linkedin_url} target="_blank" rel="noopener noreferrer" aria-label="Visit our LinkedIn page" title="LinkedIn" className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-700 hover:bg-blue-100 transition-colors">
                         <FaLinkedin size={16} />
                       </a>
                     )}

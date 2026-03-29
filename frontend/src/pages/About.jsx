@@ -85,6 +85,10 @@ const About = () => {
                       <img
                         src={getImageUrl(section.image)}
                         alt={section.title}
+                        width="720"
+                        height="480"
+                        loading="lazy"
+                        decoding="async"
                         className="rounded-3xl shadow-card w-full h-auto object-cover"
                       />
                     </div>

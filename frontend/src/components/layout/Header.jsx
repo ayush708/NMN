@@ -62,7 +62,15 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 shrink-0 group">
             {settings?.logo_url ? (
-              <img src={getImageUrl(settings.logo_url)} alt="NMN Logo" className="h-10 w-auto" />
+              <img
+                src={getImageUrl(settings.logo_url)}
+                alt="NMN Logo"
+                width="40"
+                height="40"
+                loading="eager"
+                decoding="async"
+                className="h-10 w-10 object-contain"
+              />
             ) : (
               <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-300">
                 <span className="text-white font-bold text-sm">NMN</span>

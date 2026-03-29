@@ -4,7 +4,7 @@
  */
 
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import SEO from './components/SEO';
@@ -12,38 +12,45 @@ import { settingsService } from './services';
 import { getImageUrl } from './utils/imageHelper';
 import { PUBLIC_ROUTE_SEO, ADMIN_ROUTE_SEO } from './utils/seoConfig';
 
-// Public Pages
-import Home from './pages/Home';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import Programs from './pages/Programs';
-import Events from './pages/Events';
-import News from './pages/News';
-import ProgramDetail from './pages/ProgramDetail';
-import EventDetail from './pages/EventDetail';
-import NewsDetail from './pages/NewsDetail';
-import Resources from './pages/Resources';
-import ELearning from './pages/ELearning';
-import ELearningContent from './pages/ELearningContent';
-import Gallery from './pages/Gallery';
-import GalleryAlbum from './pages/GalleryAlbum';
-import Join from './pages/Join';
-import Donate from './pages/Donate';
-import DonateVerify from './pages/DonateVerify';
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Programs = lazy(() => import('./pages/Programs'));
+const Events = lazy(() => import('./pages/Events'));
+const News = lazy(() => import('./pages/News'));
+const ProgramDetail = lazy(() => import('./pages/ProgramDetail'));
+const EventDetail = lazy(() => import('./pages/EventDetail'));
+const NewsDetail = lazy(() => import('./pages/NewsDetail'));
+const Resources = lazy(() => import('./pages/Resources'));
+const ELearning = lazy(() => import('./pages/ELearning'));
+const ELearningContent = lazy(() => import('./pages/ELearningContent'));
+const Gallery = lazy(() => import('./pages/Gallery'));
+const GalleryAlbum = lazy(() => import('./pages/GalleryAlbum'));
+const Join = lazy(() => import('./pages/Join'));
+const Donate = lazy(() => import('./pages/Donate'));
+const DonateVerify = lazy(() => import('./pages/DonateVerify'));
 
-// Admin Pages
-import AdminLogin from './admin/pages/AdminLogin';
-import AdminDashboard from './admin/pages/AdminDashboard';
-import AdminPrograms from './admin/pages/AdminPrograms';
-import AdminEvents from './admin/pages/AdminEvents';
-import AdminNews from './admin/pages/AdminNews';
-import AdminVolunteers from './admin/pages/AdminVolunteers';
-import AdminDonations from './admin/pages/AdminDonations';
-import AdminMessages from './admin/pages/AdminMessages';
-import AdminSettings from './admin/pages/AdminSettings';
-import AdminELearning from './admin/pages/AdminELearning';
-import AdminResources from './admin/pages/AdminResources';
-import AdminGallery from './admin/pages/AdminGallery';
+const AdminLogin = lazy(() => import('./admin/pages/AdminLogin'));
+const AdminDashboard = lazy(() => import('./admin/pages/AdminDashboard'));
+const AdminPrograms = lazy(() => import('./admin/pages/AdminPrograms'));
+const AdminEvents = lazy(() => import('./admin/pages/AdminEvents'));
+const AdminNews = lazy(() => import('./admin/pages/AdminNews'));
+const AdminVolunteers = lazy(() => import('./admin/pages/AdminVolunteers'));
+const AdminDonations = lazy(() => import('./admin/pages/AdminDonations'));
+const AdminMessages = lazy(() => import('./admin/pages/AdminMessages'));
+const AdminSettings = lazy(() => import('./admin/pages/AdminSettings'));
+const AdminELearning = lazy(() => import('./admin/pages/AdminELearning'));
+const AdminResources = lazy(() => import('./admin/pages/AdminResources'));
+const AdminGallery = lazy(() => import('./admin/pages/AdminGallery'));
+
+const RouteLoader = () => (
+  <div className="flex justify-center items-center min-h-[60vh]">
+    <div className="flex flex-col items-center gap-4">
+      <div className="h-10 w-10 rounded-full border-[3px] border-primary-200 border-t-primary-600 animate-spin" />
+      <p className="text-sm text-gray-400 font-medium">Loading...</p>
+    </div>
+  </div>
+);
 
 function App() {
   useEffect(() => {
@@ -75,6 +82,7 @@ function App() {
 
   return (
     <AuthProvider>
+      <Suspense fallback={<RouteLoader />}>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<><SEO {...PUBLIC_ROUTE_SEO.home} /><Home /></>} />
@@ -227,6 +235,7 @@ function App() {
         {/* 404 Not Found */}
         <Route path="*" element={<><SEO title="Page Not Found" description="The requested page could not be found on National Migrant Network." robots="noindex,follow" /><div className="container-custom py-16 text-center"><h1 className="text-3xl font-bold">404 - Page Not Found</h1></div></>} />
       </Routes>
+      </Suspense>
     </AuthProvider>
   );
 }

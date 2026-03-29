@@ -83,6 +83,10 @@ const News = () => {
                       <img
                         src={getImageUrl(news.image_url)}
                         alt={news.title}
+                        width="640"
+                        height="416"
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                     </div>
@@ -101,7 +105,7 @@ const News = () => {
                     </h3>
                     <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed mb-4">{news.summary}</p>
                     <span className="inline-flex items-center gap-1.5 text-sm font-bold text-primary-600 group-hover:gap-3 transition-all duration-300">
-                      Read More <FaChevronRight size={10} />
+                      Read Full Article <FaChevronRight size={10} />
                     </span>
                   </div>
                 </Link>

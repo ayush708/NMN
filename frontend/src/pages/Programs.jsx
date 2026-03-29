@@ -117,6 +117,10 @@ const Programs = () => {
                     <img
                       src={getImageUrl(program.image_url)}
                       alt={program.title}
+                      width="640"
+                      height="416"
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
@@ -147,7 +151,7 @@ const Programs = () => {
                   </div>
                   <div className="mt-5 pt-4 border-t border-gray-50">
                     <span className="inline-flex items-center gap-1.5 text-sm font-bold text-primary-600 group-hover:gap-3 transition-all duration-300">
-                      Learn More <FaChevronRight size={10} />
+                      Explore Program Details <FaChevronRight size={10} />
                     </span>
                   </div>
                 </div>

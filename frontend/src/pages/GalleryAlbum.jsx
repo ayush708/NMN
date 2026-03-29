@@ -84,6 +84,10 @@ const GalleryAlbum = () => {
                 <img
                   src={getImageUrl(image.image_url)}
                   alt={image.title || album.title}
+                  width="480"
+                  height="320"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-end">
@@ -114,6 +118,9 @@ const GalleryAlbum = () => {
               <img
                 src={getImageUrl(selectedImage.image_url)}
                 alt={selectedImage.title || album.title}
+                width="1280"
+                height="853"
+                decoding="async"
                 className="w-full h-auto rounded-2xl shadow-2xl"
               />
               {selectedImage.title && (
