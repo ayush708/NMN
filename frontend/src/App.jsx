@@ -7,8 +7,10 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import SEO from './components/SEO';
 import { settingsService } from './services';
 import { getImageUrl } from './utils/imageHelper';
+import { PUBLIC_ROUTE_SEO, ADMIN_ROUTE_SEO } from './utils/seoConfig';
 
 // Public Pages
 import Home from './pages/Home';
@@ -50,10 +52,6 @@ function App() {
         const response = await settingsService.get();
         const settings = response?.data;
 
-        if (settings?.site_title) {
-          document.title = settings.site_title;
-        }
-
         if (settings?.favicon_url) {
           const faviconHref = getImageUrl(settings.favicon_url);
           let faviconEl = document.querySelector('link[rel="icon"]');
@@ -79,114 +77,147 @@ function App() {
     <AuthProvider>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/programs" element={<Programs />} />
-        <Route path="/programs/:slug" element={<ProgramDetail />} />
-        <Route path="/events" element={<Events />} />
-        <Route path="/events/:slug" element={<EventDetail />} />
-        <Route path="/news" element={<News />} />
-        <Route path="/news/:slug" element={<NewsDetail />} />
-        <Route path="/resources" element={<Resources />} />
-        <Route path="/elearning" element={<ELearning />} />
-        <Route path="/elearning/:categorySlug" element={<ELearningContent />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/gallery/:slug" element={<GalleryAlbum />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/join" element={<Join />} />
-        <Route path="/donate" element={<Donate />} />
-        <Route path="/donate/verify" element={<DonateVerify />} />
+        <Route path="/" element={<><SEO {...PUBLIC_ROUTE_SEO.home} /><Home /></>} />
+        <Route path="/about" element={<><SEO {...PUBLIC_ROUTE_SEO.about} /><About /></>} />
+        <Route path="/programs" element={<><SEO {...PUBLIC_ROUTE_SEO.programs} /><Programs /></>} />
+        <Route path="/programs/:slug" element={<><SEO {...PUBLIC_ROUTE_SEO.programDetail} /><ProgramDetail /></>} />
+        <Route path="/events" element={<><SEO {...PUBLIC_ROUTE_SEO.events} /><Events /></>} />
+        <Route path="/events/:slug" element={<><SEO {...PUBLIC_ROUTE_SEO.eventDetail} /><EventDetail /></>} />
+        <Route path="/news" element={<><SEO {...PUBLIC_ROUTE_SEO.news} /><News /></>} />
+        <Route path="/news/:slug" element={<><SEO {...PUBLIC_ROUTE_SEO.newsDetail} /><NewsDetail /></>} />
+        <Route path="/resources" element={<><SEO {...PUBLIC_ROUTE_SEO.resources} /><Resources /></>} />
+        <Route path="/elearning" element={<><SEO {...PUBLIC_ROUTE_SEO.elearning} /><ELearning /></>} />
+        <Route path="/elearning/:categorySlug" element={<><SEO {...PUBLIC_ROUTE_SEO.elearningCategory} /><ELearningContent /></>} />
+        <Route path="/gallery" element={<><SEO {...PUBLIC_ROUTE_SEO.gallery} /><Gallery /></>} />
+        <Route path="/gallery/:slug" element={<><SEO {...PUBLIC_ROUTE_SEO.galleryAlbum} /><GalleryAlbum /></>} />
+        <Route path="/contact" element={<><SEO {...PUBLIC_ROUTE_SEO.contact} /><Contact /></>} />
+        <Route path="/join" element={<><SEO {...PUBLIC_ROUTE_SEO.join} /><Join /></>} />
+        <Route path="/donate" element={<><SEO {...PUBLIC_ROUTE_SEO.donate} /><Donate /></>} />
+        <Route path="/donate/verify" element={<><SEO {...PUBLIC_ROUTE_SEO.donateVerify} /><DonateVerify /></>} />
 
         {/* Admin Login (Public) */}
-        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/login" element={<><SEO {...ADMIN_ROUTE_SEO} title="Admin Login" /><AdminLogin /></>} />
 
         {/* Protected Admin Routes */}
         <Route
           path="/admin/dashboard"
           element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
+            <>
+              <SEO {...ADMIN_ROUTE_SEO} title="Admin Dashboard" />
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            </>
           }
         />
         <Route
           path="/admin/programs"
           element={
-            <ProtectedRoute>
-              <AdminPrograms />
-            </ProtectedRoute>
+            <>
+              <SEO {...ADMIN_ROUTE_SEO} title="Admin Programs" />
+              <ProtectedRoute>
+                <AdminPrograms />
+              </ProtectedRoute>
+            </>
           }
         />
         <Route
           path="/admin/events"
           element={
-            <ProtectedRoute>
-              <AdminEvents />
-            </ProtectedRoute>
+            <>
+              <SEO {...ADMIN_ROUTE_SEO} title="Admin Events" />
+              <ProtectedRoute>
+                <AdminEvents />
+              </ProtectedRoute>
+            </>
           }
         />
         <Route
           path="/admin/news"
           element={
-            <ProtectedRoute>
-              <AdminNews />
-            </ProtectedRoute>
+            <>
+              <SEO {...ADMIN_ROUTE_SEO} title="Admin News" />
+              <ProtectedRoute>
+                <AdminNews />
+              </ProtectedRoute>
+            </>
           }
         />
         <Route
           path="/admin/elearning"
           element={
-            <ProtectedRoute>
-              <AdminELearning />
-            </ProtectedRoute>
+            <>
+              <SEO {...ADMIN_ROUTE_SEO} title="Admin E-Learning" />
+              <ProtectedRoute>
+                <AdminELearning />
+              </ProtectedRoute>
+            </>
           }
         />
         <Route
           path="/admin/resources"
           element={
-            <ProtectedRoute>
-              <AdminResources />
-            </ProtectedRoute>
+            <>
+              <SEO {...ADMIN_ROUTE_SEO} title="Admin Resources" />
+              <ProtectedRoute>
+                <AdminResources />
+              </ProtectedRoute>
+            </>
           }
         />
         <Route
           path="/admin/gallery"
           element={
-            <ProtectedRoute>
-              <AdminGallery />
-            </ProtectedRoute>
+            <>
+              <SEO {...ADMIN_ROUTE_SEO} title="Admin Gallery" />
+              <ProtectedRoute>
+                <AdminGallery />
+              </ProtectedRoute>
+            </>
           }
         />
         <Route
           path="/admin/volunteers"
           element={
-            <ProtectedRoute>
-              <AdminVolunteers />
-            </ProtectedRoute>
+            <>
+              <SEO {...ADMIN_ROUTE_SEO} title="Admin Volunteers" />
+              <ProtectedRoute>
+                <AdminVolunteers />
+              </ProtectedRoute>
+            </>
           }
         />
         <Route
           path="/admin/donations"
           element={
-            <ProtectedRoute>
-              <AdminDonations />
-            </ProtectedRoute>
+            <>
+              <SEO {...ADMIN_ROUTE_SEO} title="Admin Donations" />
+              <ProtectedRoute>
+                <AdminDonations />
+              </ProtectedRoute>
+            </>
           }
         />
         <Route
           path="/admin/messages"
           element={
-            <ProtectedRoute>
-              <AdminMessages />
-            </ProtectedRoute>
+            <>
+              <SEO {...ADMIN_ROUTE_SEO} title="Admin Messages" />
+              <ProtectedRoute>
+                <AdminMessages />
+              </ProtectedRoute>
+            </>
           }
         />
         <Route
           path="/admin/settings"
           element={
-            <ProtectedRoute>
-              <AdminSettings />
-            </ProtectedRoute>
+            <>
+              <SEO {...ADMIN_ROUTE_SEO} title="Admin Settings" />
+              <ProtectedRoute>
+                <AdminSettings />
+              </ProtectedRoute>
+            </>
           }
         />
 
@@ -194,7 +225,7 @@ function App() {
         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
 
         {/* 404 Not Found */}
-        <Route path="*" element={<div className="container-custom py-16 text-center"><h1 className="text-3xl font-bold">404 - Page Not Found</h1></div>} />
+        <Route path="*" element={<><SEO title="Page Not Found" description="The requested page could not be found on National Migrant Network." robots="noindex,follow" /><div className="container-custom py-16 text-center"><h1 className="text-3xl font-bold">404 - Page Not Found</h1></div></>} />
       </Routes>
     </AuthProvider>
   );

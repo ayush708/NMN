@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Block admin pages from indexing
+Disallow: /admin/
+
+Sitemap: https://nationalmigrantnetwork.org/sitemap.xml

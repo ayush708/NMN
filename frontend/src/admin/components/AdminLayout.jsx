@@ -18,7 +18,6 @@ const AdminLayout = ({ children }) => {
         setIsSidebarOpen(false);
       }
     };
-
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
