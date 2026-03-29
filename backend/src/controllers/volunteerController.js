@@ -38,15 +38,15 @@ const submitVolunteer = async (req, res) => {
       motivation,
     };
 
-    // Send emails as non-blocking best-effort actions.
-    try {
-      await Promise.allSettled([
+    // Trigger emails in background so the API response is never delayed by SMTP.
+    setImmediate(() => {
+      Promise.allSettled([
         sendVolunteerSubmissionAcknowledgment(volunteer),
         sendVolunteerSubmissionAdminNotification(volunteer),
-      ]);
-    } catch (emailError) {
-      console.error('⚠️ Volunteer submitted but email notifications failed:', emailError.message);
-    }
+      ]).catch((emailError) => {
+        console.error('⚠️ Volunteer submitted but email notifications failed:', emailError.message);
+      });
+    });
 
     return successResponse(res, result.rows[0], 'Volunteer application submitted successfully', 201);
 

@@ -17,6 +17,7 @@ const API_URL = isNmnProductionHost
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
+  timeout: 15000,
 });
 
 // Request interceptor - Attach token via Authorization header (cross-domain fallback)
