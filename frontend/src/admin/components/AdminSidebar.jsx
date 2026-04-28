@@ -16,7 +16,6 @@ import {
   FaUsers,
   FaEnvelope,
   FaCog,
-  FaHeart,
   FaTimes,
 } from 'react-icons/fa';
 
@@ -36,7 +35,7 @@ const AdminSidebar = ({ isOpen = false, onClose = () => {} }) => {
     { name: 'Resources', path: '/admin/resources', icon: FaFileAlt },
     { name: 'Gallery', path: '/admin/gallery', icon: FaImages },
     { name: 'Volunteers', path: '/admin/volunteers', icon: FaUsers },
-    { name: 'Donations',  path: '/admin/donations',  icon: FaHeart },
+    // Donations removed
     { name: 'Messages',   path: '/admin/messages',   icon: FaEnvelope },
     { name: 'Settings', path: '/admin/settings', icon: FaCog },
   ];

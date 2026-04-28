@@ -27,8 +27,7 @@ const ELearningContent = lazy(() => import('./pages/ELearningContent'));
 const Gallery = lazy(() => import('./pages/Gallery'));
 const GalleryAlbum = lazy(() => import('./pages/GalleryAlbum'));
 const Join = lazy(() => import('./pages/Join'));
-const Donate = lazy(() => import('./pages/Donate'));
-const DonateVerify = lazy(() => import('./pages/DonateVerify'));
+// Donate pages removed
 
 const AdminLogin = lazy(() => import('./admin/pages/AdminLogin'));
 const AdminDashboard = lazy(() => import('./admin/pages/AdminDashboard'));
@@ -36,7 +35,7 @@ const AdminPrograms = lazy(() => import('./admin/pages/AdminPrograms'));
 const AdminEvents = lazy(() => import('./admin/pages/AdminEvents'));
 const AdminNews = lazy(() => import('./admin/pages/AdminNews'));
 const AdminVolunteers = lazy(() => import('./admin/pages/AdminVolunteers'));
-const AdminDonations = lazy(() => import('./admin/pages/AdminDonations'));
+// AdminDonations removed
 const AdminMessages = lazy(() => import('./admin/pages/AdminMessages'));
 const AdminSettings = lazy(() => import('./admin/pages/AdminSettings'));
 const AdminELearning = lazy(() => import('./admin/pages/AdminELearning'));
@@ -100,8 +99,7 @@ function App() {
         <Route path="/gallery/:slug" element={<><SEO {...PUBLIC_ROUTE_SEO.galleryAlbum} /><GalleryAlbum /></>} />
         <Route path="/contact" element={<><SEO {...PUBLIC_ROUTE_SEO.contact} /><Contact /></>} />
         <Route path="/join" element={<><SEO {...PUBLIC_ROUTE_SEO.join} /><Join /></>} />
-        <Route path="/donate" element={<><SEO {...PUBLIC_ROUTE_SEO.donate} /><Donate /></>} />
-        <Route path="/donate/verify" element={<><SEO {...PUBLIC_ROUTE_SEO.donateVerify} /><DonateVerify /></>} />
+        {/* Donate routes removed */}
 
         {/* Admin Login (Public) */}
         <Route path="/admin/login" element={<><SEO {...ADMIN_ROUTE_SEO} title="Admin Login" /><AdminLogin /></>} />
@@ -195,17 +193,7 @@ function App() {
             </>
           }
         />
-        <Route
-          path="/admin/donations"
-          element={
-            <>
-              <SEO {...ADMIN_ROUTE_SEO} title="Admin Donations" />
-              <ProtectedRoute>
-                <AdminDonations />
-              </ProtectedRoute>
-            </>
-          }
-        />
+        {/* Admin Donations removed */}
         <Route
           path="/admin/messages"
           element={

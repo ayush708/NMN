@@ -17,7 +17,6 @@ const pageTitles = {
   '/admin/resources': 'Resources',
   '/admin/gallery': 'Gallery',
   '/admin/volunteers': 'Volunteers',
-  '/admin/donations':  'Donations',
   '/admin/messages': 'Messages',
   '/admin/settings': 'Settings',
 };

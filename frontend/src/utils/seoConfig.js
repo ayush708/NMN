@@ -77,17 +77,7 @@ export const PUBLIC_ROUTE_SEO = {
     description:
       'Become a volunteer or partner with NMN to strengthen rights and opportunities for migrant workers.',
   },
-  donate: {
-    title: 'Donate',
-    description:
-      'Support NMN with a donation to help sustain programs, advocacy, and services for migrant communities.',
-  },
-  donateVerify: {
-    title: 'Verify Donation',
-    description:
-      'Verify your donation details securely and complete your contribution to NMN initiatives.',
-    robots: 'noindex,follow',
-  },
+  // donate and donateVerify removed
 };
 
 export const ADMIN_ROUTE_SEO = {

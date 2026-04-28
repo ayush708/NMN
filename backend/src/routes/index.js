@@ -13,7 +13,7 @@ const contactRoutes = require('./contactRoutes');
 const volunteerRoutes = require('./volunteerRoutes');
 const settingsRoutes = require('./settingsRoutes');
 const uploadRoutes = require('./uploadRoutes');
-const donationRoutes = require('./donationRoutes');
+// donationRoutes removed — Donate feature deleted
 
 router.use('/auth', authRoutes);
 router.use('/programs', programRoutes);
@@ -26,7 +26,7 @@ router.use('/contact', contactRoutes);
 router.use('/volunteer', volunteerRoutes);
 router.use('/settings', settingsRoutes);
 router.use('/upload', uploadRoutes);
-router.use('/donate', donationRoutes);
+// /donate route removed
 
 router.get('/health', (req, res) => {
   res.json({

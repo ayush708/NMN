@@ -109,12 +109,6 @@ const Header = () => {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-2.5">
             <Link
-              to="/donate"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-secondary-500 to-secondary-600 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <FaHeart size={11} /> Donate
-            </Link>
-            <Link
               to="/join"
               className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
             >
@@ -152,9 +146,7 @@ const Header = () => {
               ))}
             </nav>
             <div className="mt-4 px-1 flex flex-col gap-2.5">
-              <Link to="/donate" onClick={() => setIsOpen(false)} className="btn btn-secondary w-full justify-center">
-                <FaHeart size={12} /> Donate
-              </Link>
+              {/* Donate removed */}
               <Link to="/join" onClick={() => setIsOpen(false)} className="btn btn-primary w-full justify-center">
                 Join Us
               </Link>
