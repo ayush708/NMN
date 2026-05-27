@@ -5,14 +5,13 @@
 
 import axios from 'axios';
 
-const PROD_API_URL = 'https://nmn-production.up.railway.app/api';
-const isNmnProductionHost =
-  typeof window !== 'undefined' &&
-  (window.location.hostname === 'www.nmnhas.org.np' || window.location.hostname === 'nmnhas.org.np');
-
-const API_URL = isNmnProductionHost
-  ? PROD_API_URL
-  : (import.meta.env.VITE_API_URL || 'http://localhost:5000/api');
+// Prefer an explicit build-time `VITE_API_URL`, otherwise use a same-origin `/api`
+// when the app is served from the public site. Fall back to localhost for dev.
+const API_URL = import.meta.env.VITE_API_URL
+  || (typeof window !== 'undefined' &&
+      (window.location.hostname === 'www.nmnhas.org.np' || window.location.hostname === 'nmnhas.org.np')
+      ? '/api'
+      : 'http://localhost:5000/api');
 
 const api = axios.create({
   baseURL: API_URL,
