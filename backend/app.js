@@ -8,6 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
@@ -111,8 +112,25 @@ app.use('/uploads', (req, res, next) => {
   next();
 }, express.static(path.join(__dirname, 'uploads')));
 
+// Frontend build - serve the React app when the production bundle exists.
+const frontendDistPath = path.join(__dirname, '../frontend/dist');
+const frontendIndexPath = path.join(frontendDistPath, 'index.html');
+const hasFrontendBuild = fs.existsSync(frontendIndexPath);
+
+if (hasFrontendBuild) {
+  app.use(express.static(frontendDistPath));
+}
+
 // API routes
 app.use('/api', routes);
+
+// SPA fallback for frontend routes when the build is deployed with this app.
+if (hasFrontendBuild) {
+  app.get(/^\/(?!api\/).*/, (req, res, next) => {
+    if (req.method !== 'GET') return next();
+    res.sendFile(frontendIndexPath);
+  });
+}
 
 // Root route
 app.get('/', (req, res) => {
