@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const SITE_NAME = 'National Migrant Network';
-const DEFAULT_SITE_URL = 'https://nationalmigrantnetwork.org';
+const DEFAULT_SITE_URL = 'https://nmnhas.org.np';
 
 const getSiteUrl = () => {
   const envUrl = import.meta.env.VITE_SITE_URL;
